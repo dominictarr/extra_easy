@@ -6,5 +6,5 @@ m = ARGV[1].to_i
 
 p = couple(:'TestPrimes').new(m).primes
 
-puts p.select{|x| x >= n}.join(",")
+puts p.select{|x| x >= n}.map{|m| m.to_s(2)}.join(",")
 

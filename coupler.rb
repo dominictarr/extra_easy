@@ -15,7 +15,7 @@ module Coupler
 
 	#require 'library'
 	def load (test)
-		url = URI.parse("http://localhost:4567/?test=#{test.to_s}")
+		url = URI.parse("http://localhost:4567/?couple=#{test.to_s}")
 		ary = YAML::load(Net::HTTP.get(url))
 		eval ary[1] #require code
 		eval ary[0].to_s #init class
