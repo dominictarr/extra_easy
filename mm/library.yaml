@@ -1,0 +1,24 @@
+--- !ruby/object:Library 
+depends: !ruby/object:Depends 
+  dep: 
+    :TestAdaptableTest: 
+    - tests/test_adaptable_test.rb
+    :Primes: 
+    - ./mm/primes.rb
+    :TestPrimes: 
+    - ./mm/test_primes.rb
+    :SmartPrimes: 
+    - ./mm/smart_primes.rb
+passes: 
+  :TestAdaptableTest: 
+  - :TestPrimes
+  :TestPrimes: 
+  - :Primes
+  - :SmartPrimes
+subjects: 
+- :Primes
+- :TestPrimes
+- :SmartPrimes
+test_for_test: :TestAdaptableTest
+tests: 
+- :TestPrimes

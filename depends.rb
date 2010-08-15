@@ -1,4 +1,3 @@
-require 'set'
 class Depends
 
 	def depends
@@ -10,15 +9,20 @@ class Depends
 			raise "expected #{r}, (#{i}th arg) to be a String" unless r.is_a? String
 		}
 		@dep ||={}
-		@dep[klass] ||=Set.new
-		@dep[klass].merge(requires)
+		@dep[klass] ||=[]
+		requires.each{|e|
+			@dep[klass] << e
+		}
 		puts @dep[klass].inspect
 	end
 	def requires(klass)
 		raise "expected #{klass} to be symbol" unless klass.is_a? Symbol
 		@dep[klass].each{|r|
-			require r		
+			puts "require '#{r}'"
+			puts require r
 		} if @dep[klass]
+		
+		puts "eval '#{klass}'"
 		eval klass.to_s
 	end
 end

@@ -1,0 +1,16 @@
+--- !ruby/object:Depends 
+dep: 
+  :SmartPrimes2: 
+  - ./modules/smart_primes2.rb
+  - ./modules/smart_primes2.rb
+  - ./modules/smart_primes2.rb
+  :TestPrimes: 
+  - modules/tests/test_primes.rb
+  :TestAdaptableTest: 
+  - tests/test_adaptable_test.rb
+  :Primes: 
+  - modules/primes.rb
+  :SmartPrimes: 
+  - modules/smart_primes.rb
+  :TooCleverPrimes: 
+  - modules/too_clever_primes.rb
