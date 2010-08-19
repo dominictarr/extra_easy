@@ -1,2 +1,2 @@
-require 'sinatra_hello'
-run Sinatra::Application
+require 'meta_modular'
+run MetaModular
