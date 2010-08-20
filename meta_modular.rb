@@ -88,6 +88,7 @@ class MetaModular < Sinatra::Base
 			s << "  </li>"
 		}
 		s << "</ol>"
+		s << `ruby -version`
 		end
 		s
 	end
