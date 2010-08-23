@@ -1,61 +1,30 @@
 
 require 'rubygems'
 require 'sinatra/base'
-require 'yaml'
-require 'library'
+require 'dm_prod'
+require 'library_db'
+#require 'model2'
 
 class MetaModular < Sinatra::Base
 
 	def initialize(app=nil)
 		super(app)
-	@dir = Dir.new('./mm/')
-	@lib = Library.new
-	@lib.add_depends(:TestAdaptableTest,'tests/test_adaptable_test.rb')
-	load
-	end
-	def filename
-		@dir.path + "library.yaml"
+		puts "INITIALIZE"
+	@lib = LibraryDb.new
 	end
 
-	def load
-		@lib = YAML::load(File.open(filename,'r').read)
-	end
-
-	def save
-		puts @lib.to_yaml
-		f = File.new(filename,'w')
-		f.write(@lib.to_yaml)
-		f.close
-	end
-
-#	if File.exists? filename then
-#		load 
-#	end
 	def test_subs
 		@lib.passes
 	end
 
 	post '/submit' do
 		content_type 'text/plain'
-		#params.inspect + " " +  params['rb_file'].class.to_s
 		puts params.inspect
-		uploaded = params['rb_file'][:tempfile].read
-		#write while into a safe directory somewhere.
-		f = File.new(@dir.path + params['rb_file'][:filename],'w')
-		puts f.path
-		f.write(uploaded)
-		f.close
 
-		@lib.add_depends(params['class_name'].to_sym, f.path)
+		@lib.add_depends(params['class_name'].to_sym, params['rb_file'][:tempfile])
 		@lib.add(params['class_name'].to_sym)
-		save
+		"submitted? "
 
-		uploaded
-
-		#now run tests!
-		#check if it was a test,
-		#test everthing if it was,
-		#and run it against all tests.
 	end
 	get '/upload' do
 		%{
@@ -69,15 +38,22 @@ class MetaModular < Sinatra::Base
 		}
 	end
 	get '/' do
-#		return "HELKFALIASO"
+		puts Klass.all.inspect
+		puts UnitTest.all.inspect
+		puts TestRun.all.inspect
+
 		s = ""
 		if params["couple"] then
 			content_type 'text/plain'
-			klass = test_subs[params["couple"].to_sym].to_a.first
-			a = [klass.to_s]
-			@lib.depends_for(klass.to_sym).each{|r|
-				 a << File.open(r).read
-			}
+			#klass = test_subs[params["couple"].to_sym].to_a.first
+			#@lib.depends_for(klass.to_sym).each{|r|
+			#	 a << File.open(r).read
+			klass = Klass.first(:name => params["couple"].to_sym)
+			a = [klass.name]
+			
+			a << klass.rb_files.map{|r| r.code}.join("\n")
+			#}
+
 			s << a.to_yaml
 		else
 		s = "<ol>"

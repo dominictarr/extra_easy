@@ -1,0 +1,4 @@
+module ModuleWithConstants
+SqrtTen = 3.161
+class  DoNothing; end
+end

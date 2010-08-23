@@ -5,20 +5,25 @@ require 'quick_attr'
 # require 'modules/stdout_catcher'
 require 'sandbox'
 
+def include_header (code)
+	eval code
+end
 
 class Tester 
 	extend QuickAttr	
 	quick_attr :test,:klass
 	quick_array :requires
+	quick_array :headers
 
 	def run()
-		 unless requires.empty? then
-			requires.each {|r| 
-				require r
-			}
-		end
-		t = eval test.to_s
-		k = eval klass.to_s
+		requires.each {|r| 
+			require r
+		}
+		headers.each {|r| 
+			include_header r
+		}
+		t = include_header test.to_s
+		k = include_header klass.to_s
 		r = true
 		t.test_methods.each{|m|
 			r = false unless t.new(m).adapt(k) == "."
@@ -32,6 +37,7 @@ class Tester
 		test map[:test]
 		klass map[:klass]
 		requires *map[:require] if map[:require]
+		headers *map[:headers] if map[:headers]
 		self
 	end
 	
@@ -41,6 +47,9 @@ class Tester
 		sb.code ""
 		requires.each{|r|
 			sb.code << "require \"#{r}\"\n"
+		}
+		headers.each{|r|
+			sb.code << "#{r}\n"
 		}
 		sb.code << "
 		r = true

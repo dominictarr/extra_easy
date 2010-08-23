@@ -1,25 +1,28 @@
-require 'adaptable_test'
-require 'library'
+require 'dm_test'
+require 'model_test'
+require 'library_db'
 
-class TestLibrary < AdaptableTest
+
+
+class TestLibrary < ModelTest
 	
-	def default_subject; Library; end
+	def default_subject; LibraryDb; end
 
 	def test_is_test_empty
 		lib = subject.new
-		lib.depends(d = Depends.new)
+	#	lib.depends(d = Depends.new)
 		begin
 			lib.is_test?(:RandomSymbol_30958woeh)
 			fail "expected a RuntimeError due to #{subject} not knowing :RandomSymbol_30958woeh"
 		rescue RuntimeError => a
 		end
-		d.depends_on(:TestAdaptableTest,'./tests/test_adaptable_test.rb')
+#		lib.add_depends(:TestAdaptableTest,'./tests/test_adaptable_test.rb')
 
 		assert lib.is_test?(:TestAdaptableTest)
 
-		d.depends_on(:TestPrimes,'./modules/tests/test_primes.rb')
+		lib.add_depends(:TestPrimes,'./modules/tests/test_primes.rb')
 		assert lib.is_test?(:TestPrimes)
-		d.depends_on(:Primes,'./modules/primes.rb')
+		lib.add_depends(:Primes,'./modules/primes.rb')
 		assert_equal false, lib.is_test?(:Primes), "expected Primes not to be a test"
 
 		assert lib.test(:TestPrimes,:Primes)
@@ -28,19 +31,19 @@ class TestLibrary < AdaptableTest
 	end
 	def test_add
 		lib = subject.new
-		lib.depends(d = Depends.new)
-		d.depends_on(:TestAdaptableTest,'./tests/test_adaptable_test.rb')
+		#lib.depends(d = Depends.new)
+	#	lib.add_depends(:TestAdaptableTest,'./tests/test_adaptable_test.rb')
 		
-		lib.add_test(:TestAdaptableTest)
+		lib.is_test?('TestAdaptableTest')
 		assert_equal [:TestAdaptableTest],lib.passes[:TestAdaptableTest]
-		d.depends_on(:TestPrimes,'./modules/tests/test_primes.rb')
+		lib.add_depends(:TestPrimes,'./modules/tests/test_primes.rb')
 
 		lib.add(:TestPrimes)
 		assert_equal [:TestAdaptableTest,:TestPrimes],lib.passes[:TestAdaptableTest]
-		d.depends_on(:Primes,'./modules/primes.rb')
+		lib.add_depends(:Primes,'./modules/primes.rb')
 		lib.add(:Primes)
 		assert_equal [:Primes],lib.passes[:TestPrimes]
-		
+
 	end
 end
 

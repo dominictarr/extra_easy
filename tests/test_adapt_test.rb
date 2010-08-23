@@ -17,8 +17,7 @@ class TestAdaptTest < AdaptableTest
 		puts "ruby test"
 		t = Class.new(TestExample3)
 
-#		subject ||= -1
-		
+
 		t.send(:include,subject)
 		t.send(:define_method,:default_subject){7}
 		mr = MiniRunner.new

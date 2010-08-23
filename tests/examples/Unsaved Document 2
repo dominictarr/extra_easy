@@ -1,9 +1,0 @@
-require 'test/unit'
-
-class TestExample < Test::Unit::TestCase
-
-Seven = 7
-
-def subject; :Seven end
-
-end

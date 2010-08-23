@@ -1,0 +1,3 @@
+module DifferentModule
+class AnotherEmptyClass
+end;end

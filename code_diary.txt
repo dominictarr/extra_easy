@@ -1,0 +1,61 @@
+22 aug 2010
+
+trying to get DataMapper working. it's a database wrapper/helper thing for ruby.
+
+it's definately easier than using a database directly.. but. it's a LEAKY ABSTRACTION.
+
+partly, it's about defining the semantics of a data structure, to be queryable.
+
+thats the *relational* in relational database.
+
+and databases... what do I think about databases? as computers go, they are practically IRON AGE. 
+(not quite stoneage...but OLD)
+
+what about a relational datastrucutre/persistance framework optomised for elegance? 
+	(which may be backed by a DB - but totally hides it)
+
+design for the more complicated relationships first, let simple stuff trail:
+
+should be duck-typed, like ruby is.
+
+many to many 
+one to many 
+one to one
+primitive
+
+databases use foriegn keys, and join tables.
+
+	messy!
+
+using DataMapper you have to say:
+
+	Class Thing
+		has n, :whatever
+	end
+
+~ and
+
+	class Whatever
+		belongs_to :thing
+	end
+	
+	which make a pointer from Whatever back to Thing.
+	this is echonomical, but confusing. - but you have to learn it because databases are everywhere.
+	
+what about just saying:
+
+another important thing is whether Thing.whatever => Whatever means that Whatever.thing => Thing
+
+(it's bidirectional)
+
+
+~~~~~~~~~~~~~~~~~~~~~~~~
+EVENTUALLY GOT HEAD AROUND DATAMAPPER. argh! the thing they neglected to mention is that 
+local objects not update as you expect!
+
+you have to call .reload !!!!
+
+muther fucker! they could have mentioned something!
+~~~~~~~~~~~~~~~~~~~~~~~~
+
+

@@ -1,0 +1,3 @@
+
+  DataMapper.setup(:default, 'mysql://root:mysql@localhost/dm_prod')
+
