@@ -16,6 +16,9 @@ class TestModel2 < ModelTest
 		tr = TestRun.create(:klass => x, :test => test_x, :pass => true)
 		assert tr.saved?
 
+		TestRunMethod.create(:test_run => tr, :method_name => "test_hello")
+		
+
 		assert_equal [tr], test_x.this_test_runs
 		assert_equal [tr], x.test_runs
 		
@@ -46,7 +49,7 @@ class TestModel2 < ModelTest
 		assert_equal [x], test_x.klasses_passed
 	end
 	
-	def test_is_test
+	def dtest_is_test
 				tat = Klass.first(:name => :TestAdaptableTest)
 				assert_equal true, tat.is_test
 				assert tat.klasses_passed.include? tat	 
@@ -70,7 +73,7 @@ class TestModel2 < ModelTest
 		
 		assert p.tests_passed.include? tp
 		assert tp.klasses_passed.include? p
-		assert tp.klasses_passed.include? sp		
+		assert tp.klasses_passed.include? sp
 	end
 	
 	def test_parse_from_rb_file
@@ -87,8 +90,94 @@ class TestModel2 < ModelTest
 		assert sp
 
 		assert_equal [p,sp], tp.klasses_passed
+		
+		tr = TestRun.first(:test => tp, :klass => p)
+		assert tr.pass
+	#	puts tr.test_run_methods.inspect
+		tr.test_run_methods.each{|e|
+			assert_equal ".",e.result
+		}
+		assert 4 < tr.test_run_methods.length
+
+		klasses += RbFile.load_rb("modules/broke_primes.rb").parse
+
+		bp = Klass.first(:name => :BrokePrimes)
+		puts bp.inspect
+		btr = bp.test_runs.first(:test => tp)
+		assert_equal bp, btr.klass
+		assert_equal tp, btr.test
+		assert_equal false,btr.pass
+		
+		
+		#for some fucking weird reason the failing test run method evaporates...
+		assert TestRunMethod.all(:result => "F").length > 0,"there should be a \"F\" TestRunMethod somewhere"
+		
+		puts "#############################"
+		puts btr.test_run_methods.inspect
+		
+		assert btr.test_run_methods.find{|f|
+#			puts "METHOD NAME #{f.method_name}"
+			f.result == "F" or f.result == "E"
+		}, "expected to find at least one failing test method for BrokePrimes"
+		
+#		btr2 = bp.test_runs.first
+#		assert btr2
+#		assert_equal bp, btr2.klass
+#		assert_equal Klass.first(:name => :TestAdaptable, btr2.klass
+#		puts "test Broke Primes (on #{btr2.test.name})"
+#		puts btr2.test.inspect
+#		assert_equal tp, 
+		
+#		puts "test Broke Primes (on #{btr2.test.name})"
+#		puts btr2.test_run_methods.inspect
+#		assert 0 == btr2.test_run_methods.length
+#		assert_equal false,btr2.pass
+		
 	end
+
+	def test_parse_from_rb_file_werid
+		klasses = []
+		klasses += RbFile.load_rb("modules/tests/test_primes.rb").parse
+		klasses += RbFile.load_rb("modules/primes.rb").parse
+		klasses += RbFile.load_rb("modules/broke_primes.rb").parse
+		klasses += RbFile.load_rb("modules/smart_primes.rb").parse
 	
+		tp = Klass.first(:name => :TestPrimes)
+		p = Klass.first(:name => :Primes)
+		sp = Klass.first(:name => :SmartPrimes)
+		
+		tr = TestRun.first(:test => tp, :klass => p)
+#		assert tr.pass
+#		tr.test_run_methods.each{|e|
+#			assert_equal ".",e.result
+#		}
+
+
+		bp = Klass.first(:name => :BrokePrimes)
+
+		btr = bp.test_runs.first(:test => tp)
+
+		assert_equal bp, btr.klass
+		assert_equal tp, btr.test
+		assert_equal false,btr.pass
+		
+		#for some fucking weird reason the failing test run method evaporates...
+		#TestRunMethod's wernt saving becase the message was too long so save as a string?
+		#when i changed the type to a Text it worked.
+		#ofcourse i expect it to save! DataMapper just fails silently. disapointing.
+		assert TestRunMethod.all(:result => "F").length > 0,"there should be a \"F\" TestRunMethod somewhere"
+		
+		puts "#############################"
+		puts btr.test_run_methods.inspect
+		
+	 assert btr.test_run_methods.find{|f|
+		#	puts "METHOD NAME #{f.method_name} => #{f.result}"
+			f.result == "F" or f.result == "E"
+		}, "expected to find at least one failing test method for BrokePrimes"
+		#fail
+		
+	end
+
 	
 	def test_auto_join
 	
@@ -109,8 +198,6 @@ class TestModel2 < ModelTest
 		t2.reload
 		assert_equal [w2,w3], t2.whatevers
 	end
-
-
 end
 
 Mini::Test.autorun

@@ -58,4 +58,16 @@ you have to call .reload !!!!
 muther fucker! they could have mentioned something!
 ~~~~~~~~~~~~~~~~~~~~~~~~
 
-
+okay. got the updated stuff in meta-modular. 
+	~ it loads .rb and parses the classes, runs them through the tests.
+	~ or loads the test, if it's a test.
+	
+	next: retrive good information from a test run... and display it.
+	
+	output
+	error
+	total time
+	time for each test.
+	each error.
+	
+	that will mean a test_function model

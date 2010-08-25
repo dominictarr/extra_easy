@@ -16,6 +16,7 @@ class Tester
 	quick_array :headers
 
 	def run()
+		result = Hash.new
 		requires.each {|r| 
 			require r
 		}
@@ -26,10 +27,21 @@ class Tester
 		k = include_header klass.to_s
 		r = true
 		t.test_methods.each{|m|
-			r = false unless t.new(m).adapt(k) == "."
+			#take time
+			#capture output
+			returned = {}
+			o = StdoutCatcher.catch_out{
+				start = Time.now
+				returned = t.new(m).adapt(k)
+				diff = Time.now - start
+				returned[:time] = diff
+			}
+			returned[:output] = o
+			result[m] = returned
+			r = false unless result[m][:result] == "."  #here is checks for a pass.
 		}
-		{:result => r}
-		
+		result[:pass] = r
+		result
 	end
 	
 	def yaml_instruction (yaml)
@@ -48,18 +60,25 @@ class Tester
 		requires.each{|r|
 			sb.code << "require \"#{r}\"\n"
 		}
+		sb.code << "require 'rubygems'\n"
+		sb.code << "require 'mini/test'\n"
+		sb.code << "require 'tester'\n"
 		headers.each{|r|
 			sb.code << "#{r}\n"
 		}
-		sb.code << "
-		r = true
-		#{test}.test_methods.each{|m|
-			r = false unless #{test}.new(m).adapt(#{klass}) == \".\"
-		}
-		r
-		"
+#		sb.code << "
+#		result = {:pass => true}\n" + 
+		#~ #{test}.test_methods.each{|m|
+		#~ 	r = false unless #{test}.new(m).adapt(#{klass}) == \".\"
+#		"#{test}.test_methods.each{|m|
+#			result[m] = #{test}.new(m).adapt(#{klass})
+#			result[:pass] = false unless result[m][:result] == \".\"  #here is checks for a pass.
+#		}
+#		result
+#		"
+		sb.code << "Tester.new.test(#{test}).klass(#{klass}).run"
 		#puts sb.code
-		{:result => sb.run}
+		sb.run
 
 	end
 end

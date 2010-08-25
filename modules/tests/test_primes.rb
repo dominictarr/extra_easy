@@ -52,7 +52,7 @@ def assert_underN(n,pn)
 		assert_underN(10,[2,3,5,7])
 	end
 	
-	def test_under20
+	def test_under_twenty
 		assert_underN(20,[2,3,5,7,11,13,17,19])
 	end
 end

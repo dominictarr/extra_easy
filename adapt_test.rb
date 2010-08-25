@@ -1,12 +1,25 @@
 require 'mini/test'
+require 'minitest/unit'
 
 module AdapterForTest
+	class MiniRunner < Hash
+		def puke klass,method,error
 
-	class MiniRunner
-		def puke (*args)
-			puts args.join(" ")
-			return 			[args[0].to_s,args[1],args[2]]
+			self[:error] = error.class.name
+			self[:message] = error.message
+			
+			self[:trace] = error.backtrace.join("\n")
 
+			case error
+				when Mini::Assertion then
+					self[:result] = "Fail."
+				else
+					self[:result] = "ERROR!"
+				end
+			return 		self
+		end
+		def to_hash
+			Hash.new.merge(self)
 		end
 	end
 	
@@ -25,10 +38,16 @@ module AdapterForTest
 	
 	def adapt(*sub)
 		raise "Adaptable must extend a Mini::Test::TestCase" unless self.is_a? Mini::Test::TestCase
-			
+			self._assertions = 0
 			@subject = (sub.empty? ? default_subject : sub.first)
-			r = run MiniRunner.new
-			return r
+			mr = MiniRunner.new
+			r = run  mr
+			#self[:klass] = klass.name
+			mr[:method] = @name
+
+			mr[:result]= "pass" if mr[:result].nil?
+
+			return mr.to_hash
 	end
 end
 

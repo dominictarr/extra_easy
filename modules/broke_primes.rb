@@ -4,7 +4,9 @@ def initialize (x);
 @primes = []
 	PRIMES.each {|it| if it <= x then @primes << it; end}
 	end
-def primes; @primes; end
+def primes; @primes; 
+#	raise "NOW! here is an error!"
+end
 end
 
 

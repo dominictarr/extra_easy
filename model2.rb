@@ -3,6 +3,8 @@ require 'dm-validations'
 require  'dm-migrations'
 require 'tester'
 require 'rb_parser'
+require 'dm_test'
+
   class RbFile
 		include DataMapper::Resource
 
@@ -17,14 +19,14 @@ require 'rb_parser'
 
 		def parse
 			r = ClassHerd::RbParser.new(code).parse
-			puts "classes Parsed from #{name}"
-			puts r.classes
+			#puts "classes Parsed from #{name}"
+			#puts r.classes
 			added = []
 			r.classes.each{|e|
 				k = Klass.first_or_create(:name => e)
 				k.rb_files << self unless k.rb_files.include? self
 				k.run_all_tests
-				puts "UPDATED: #{k.name}"
+			#	puts "UPDATED: #{k.name}"
 				added << k
 			}
 			added
@@ -102,20 +104,65 @@ require 'rb_parser'
 
 		belongs_to :klass, :key => true
 		belongs_to :test, 'Klass', :key => true
+		has n,:test_run_methods
+		
+		property :total_time, Float
 
 		def run
 				r =  Tester.new.
-				test(test.name).
-				klass(klass.name).
-				headers((test.code + klass.code)).
-				run_sandboxed
-				self.pass= r[:result]
+					test(test.name).
+					klass(klass.name).
+					headers((test.code + klass.code)).
+					run_sandboxed
+				puts
+				puts "TEST #{klass.name} ON #{test.name} ==> #{r[:pass]}"
+				puts
+ 				self.pass= r[:pass]
+				time = 0.0
+				r.each {|k,v|
+					if v.is_a? Hash then
+					
+						#puts v[:method]
+						#print v[:result]
+						#v[:result] = "F"
+						#test_run_methods.
+						trm = TestRunMethod.create(
+								:method_name => v[:method], 
+								:test_run => self,
+								:error => v[:error],
+								:message => v[:message],
+								:trace => v[:trace],
+								:result => v[:result],
+								:time_taken => v[:time],
+								:output => v[:output]
+						)
+						time += trm.time_taken
+						raise "NOT SAVED!!!! #{v.inspect}" unless trm.saved? 
+					end
+				}
+				self.total_time = time
+				puts
+				puts "Test #{klass.name} on #{test.name} => #{pass} in #{total_time}"
+				puts
+ 				
 				save
 				reload
-				r[:result]
+				r[:pass]
 		end
 
 	end	
+	class TestRunMethod
+	  include DataMapper::Resource
+		belongs_to :test_run, :key => true
+		property :method_name, String, :key => true
+		property :result, String
+		property :error, String
+		property :message, Text
+		property :output, Text
+		property :trace, Text
+		property :time_taken, Float
+	end
+	
 class Whatever
   include DataMapper::Resource
   property :id,   Serial
@@ -128,24 +175,27 @@ class Thing
 	has n, :whatevers, :through => Resource
 end
 
-DataMapper.auto_migrate!	
 DataMapper.finalize
+#DataMapper.auto_migrate!
 
 rb = RbFile.load_rb('tests/test_adaptable_test.rb')
 t = Klass.first_or_create(
 		:name => 'TestAdaptableTest', 
 		:is_test => true)
+	
 rb.klasses << t
 rb.save
 rb.reload
 t.reload
 
 tr = t.run_test(t) #runs this test on it self... returns a TestRun
-tr.pass
+puts tr.pass
 puts tr.inspect
-puts rb.parse
+puts tr.test_run_methods.inspect
 
-raise "expected TestAdaptableTest.run_test(TestAdaptableTest) to pass" unless tr.pass
+#puts rb.parse
+
+#raise "expected TestAdaptableTest.run_test(TestAdaptableTest) to pass" unless tr.pass
 	
 
 

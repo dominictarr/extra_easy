@@ -27,7 +27,7 @@ class TestAdaptTest < AdaptableTest
 	
 		assert test.adapt(6)
 		assert_equal 6, test.subject
-		assert_equal ".", test.adapt(7)
+		assert_equal ".", test.adapt(7)[:result]
 		assert_equal 7, test.subject
 		assert  test.adapt(8)
 		assert_equal 8, test.subject

@@ -13,15 +13,16 @@ class TestTester < AdaptableTest
 					requires('modules/tests/test_primes.rb','modules/primes.rb').
 					run_sandboxed
 		
-		assert report[:result], "expected non nil result #{report[:result].inspect}"
+		puts report.inspect
+		assert report[:pass], "expected non nil result #{report[:result].inspect}"
 
 		report = Tester.new.test(:'TestPrimes').
 					klass(:BrokePrimes).
 					requires('modules/tests/test_primes.rb','modules/broke_primes.rb').
 					run_sandboxed
 	puts "REPORT:"
-		puts report[:result].inspect
-		assert !report[:result],
+		puts report.inspect
+		assert !report[:pass],
 		#more meaningful report which states which methods are passed and failed
 
 		report = Tester.new.test(:'TestPrimes').
@@ -29,7 +30,7 @@ class TestTester < AdaptableTest
 					requires('modules/tests/test_primes.rb','modules/smart_primes.rb').
 					run_sandboxed
 			
-		assert report[:result]
+		assert report[:pass]
 		begin 
 			eval "SmartPrimes"
 			assert false, "expected a NameError"
@@ -40,7 +41,7 @@ class TestTester < AdaptableTest
 					klass(:TooCleverPrimes).
 					requires('modules/tests/test_primes.rb','modules/too_clever_primes.rb').run_sandboxed
 			
-		assert report[:result]
+		assert report[:pass]
 		begin 
 			eval "TooCleverPrimes"
 			assert false, "expected a NameError"
@@ -51,7 +52,7 @@ class TestTester < AdaptableTest
 					klass(:BrokePrimes).
 			 		requires('modules/tests/test_primes.rb','modules/broke_primes.rb').run_sandboxed
 			
-		assert !report[:result]
+		assert !report[:pass]
 
 	end
 end

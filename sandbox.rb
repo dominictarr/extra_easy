@@ -9,16 +9,21 @@ quick_attr :code,:output,:returned,:error
 def run
 	
 	  Open4::popen4("ruby #{__FILE__}") do |pid, stdin, stdout, stderr|
+
+			#puts code
 			stdin.puts code
       	stdin.close
       	yaml = stdout.read.strip
-      #	puts "YAML: <#{yaml}>"
+      	#puts "YAML: <#{yaml}>"
       	report = YAML::load(yaml) || {} #need to catch puts, because the test prints a message if the test fails.
  			output report[:output]
  			returned report[:returned]
  			error report[:error]
+			
  			err = stderr.read
 			raise(err) if (err != "" )
+			#raise(report[:error]) if report[:error]
+
 		end
 		returned
 
