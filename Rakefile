@@ -4,6 +4,7 @@ namespace :db do
 		require 'dm_prod'
 		require 'model2'
 		DataMapper.auto_migrate!
+		puts RbFile.all.inspect
 	end
 end
 
