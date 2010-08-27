@@ -35,11 +35,9 @@ require 'rb_parser'
 			if file.is_a? String then
 				file = File.open(file)
 			end
-			r = RbFile.first_or_create(
-				{:name => file.path},
-				{:code => file.read, :created_at => Time.now}
-			)
-			
+			r = RbFile.first_or_create(:name => file.path)
+			r.code => file.read
+			r.save		
 			file.close
 			r
 		end
