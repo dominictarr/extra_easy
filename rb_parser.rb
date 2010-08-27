@@ -1,5 +1,5 @@
 require 'parser'
-#require 'sexp_processor'
+require 'sexp_processor'
 
 module ClassHerd
 class RbParser < SexpProcessor
