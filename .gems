@@ -3,3 +3,8 @@ open4
 dm-core
 dm-transactions
 dm-postgres-adapter
+dm-validations
+ruby_parser
+dm-validations
+dm-migrations
+minitest
