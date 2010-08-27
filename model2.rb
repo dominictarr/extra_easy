@@ -36,7 +36,7 @@ require 'rb_parser'
 				file = File.open(file)
 			end
 			r = RbFile.first_or_create(:name => file.path)
-			r.code => file.read
+			r.code = file.read
 			r.save		
 			file.close
 			r

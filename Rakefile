@@ -6,3 +6,16 @@ namespace :db do
 		DataMapper.auto_migrate!
 	end
 end
+
+namespace :heroku do
+	task :deploy do
+		puts "DEPLOYING..."
+		add = "git add -A"
+		commit = "git commit -m 'deploying to heroku'"
+		push = "git push heroku master"
+		sh add
+		sh commit
+		sh push
+	end
+end
+
