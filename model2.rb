@@ -3,7 +3,6 @@ require 'dm-validations'
 require  'dm-migrations'
 require 'tester'
 require 'rb_parser'
-require 'dm_test'
 
   class RbFile
 		include DataMapper::Resource
