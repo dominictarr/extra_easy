@@ -1,2 +1,2 @@
-require 'sinatra_hello'
-run HelloSinatra
+require 'meta_modular'
+run MetaModular
