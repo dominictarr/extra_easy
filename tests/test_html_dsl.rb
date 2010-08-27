@@ -114,8 +114,8 @@ class TestHtmlDsl < AdaptableTest
 			assert whitespaceless_compare("asdf", "a\ns\n\nd f")
 	end
 	
-	def test
-		raise "what about disabling @tags when you call text() so that it just works on strings which are returned.
+	def dtest
+		raise "what about disabling @tags when you call text() so that it just works on strings which are returned."
 	end
 end
 
