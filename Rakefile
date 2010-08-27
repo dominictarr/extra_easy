@@ -26,3 +26,8 @@ namespace :heroku do
 	end
 end
 
+
+task :tests do
+	require 'all_tests'
+	run_all_tests
+end

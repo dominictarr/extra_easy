@@ -3,15 +3,24 @@ require 'rubygems'
 require 'test/unit'
 include Test::Unit
 
-tests = `ls -1 */test*.rb`
-#puts tests
-tests = tests.split("\n").select{|it|
-		#puts it 
-		it =~ /^.*\/test_.*\.rb$/
+
+def run_all_tests
+		tests = `ls -1 */test*.rb`
+	#puts tests
+		tests = tests.split("\n").select{|it|
+			#puts it 
+			it =~ /^.*\/test_.*\.rb$/
+			}
+	tests.inspect
+	#tests = tests - ["class_herd/test_rewire2.rb","class_herd/test_interface.rb"]
+	tests.each{|test|
+		puts test
+		require test
 		}
-tests.inspect
-#tests = tests - ["class_herd/test_rewire2.rb","class_herd/test_interface.rb"]
-tests.each{|test|
-	puts test
-	require test
-	}
+		
+end
+
+if __FILE__ == $0 then
+
+	run_all_tests
+end
