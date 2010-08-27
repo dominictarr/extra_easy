@@ -36,7 +36,7 @@ require 'rb_parser'
 				file = File.open(file)
 			end
 			r = RbFile.first_or_create(
-				{:name => file.path,},
+				{:name => file.path},
 				{:code => file.read, :created_at => Time.now}
 			)
 			
