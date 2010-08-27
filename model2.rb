@@ -8,8 +8,8 @@ require 'dm_test'
   class RbFile
 		include DataMapper::Resource
 
-		property :id,         Serial   # An auto-increment integer key
-		property :name,      String  # A varchar type string, for short strings
+#		property :id,         Serial   # An auto-increment integer key
+		property :name,      String, :key => true # A varchar type string, for short strings
 		property :code,       Text     # A text block, for longer string data.
 		property :created_at, DateTime # A DateTime, for any date you might like.
 
@@ -100,15 +100,17 @@ require 'dm_test'
 	
 	class TestRun
 		include DataMapper::Resource
-		property :pass,Boolean
 
 		belongs_to :klass, :key => true
 		belongs_to :test, 'Klass', :key => true
 		has n,:test_run_methods
 		
 		property :total_time, Float
+		property :pass,	Boolean
+		property :result,	String
 
 		def run
+				
 				r =  Tester.new.
 					test(test.name).
 					klass(klass.name).
@@ -122,20 +124,25 @@ require 'dm_test'
 				r.each {|k,v|
 					if v.is_a? Hash then
 					
-						#puts v[:method]
-						#print v[:result]
-						#v[:result] = "F"
-						#test_run_methods.
-						trm = TestRunMethod.create(
+						trm = TestRunMethod.first_or_create({
 								:method_name => v[:method], 
-								:test_run => self,
-								:error => v[:error],
+								:test_run => self},
+								{:error => v[:error],
 								:message => v[:message],
 								:trace => v[:trace],
 								:result => v[:result],
 								:time_taken => v[:time],
-								:output => v[:output]
+								:output => v[:output]}
 						)
+						
+						case trm.result
+							when "fail." then
+								self.result = trm.result if self.result == "pass"
+							when "ERROR!" then
+								self.result = trm.result
+							else
+								self.result = "pass"
+							end							
 						time += trm.time_taken
 						raise "NOT SAVED!!!! #{v.inspect}" unless trm.saved? 
 					end
@@ -150,7 +157,8 @@ require 'dm_test'
 				r[:pass]
 		end
 
-	end	
+	end
+
 	class TestRunMethod
 	  include DataMapper::Resource
 		belongs_to :test_run, :key => true
@@ -176,7 +184,11 @@ class Thing
 end
 
 DataMapper.finalize
-#DataMapper.auto_migrate!
+DataMapper.auto_migrate! if ARGV.include? "MIGRATE"
+
+#if __FILE__ == $0 then
+#	MetaModular.run! :host => 'localhost', :port => 5678
+#end
 
 rb = RbFile.load_rb('tests/test_adaptable_test.rb')
 t = Klass.first_or_create(

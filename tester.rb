@@ -38,7 +38,7 @@ class Tester
 			}
 			returned[:output] = o
 			result[m] = returned
-			r = false unless result[m][:result] == "."  #here is checks for a pass.
+			r = false unless result[m][:result] == "pass"  #here is checks for a pass.
 		}
 		result[:pass] = r
 		result

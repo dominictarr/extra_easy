@@ -14,9 +14,9 @@ def test_is_adaptable
 		_default = subject.new(n).adapt
 		_nil = subject.new(n).adapt("NONSENSE")
 		puts "	#{n} -> (default: #{_default.inspect}  random: #{_nil.inspect})"
-		assert_equal ".",_default[:result]
+		assert_equal "pass",_default[:result]
 		puts _nil.inspect
-		assert_equal "E", _nil[:result], "expected fail message when #{subject}.adapt(\"#{nonsense}\")"
+		assert_equal "ERROR!", _nil[:result], "expected fail message when #{subject}.adapt(\"#{nonsense}\")"
 		assert _nil != "."
 	}
 	assert m.length > 0	

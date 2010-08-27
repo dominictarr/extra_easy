@@ -2,7 +2,6 @@
 require 'rubygems'
 require 'sinatra/base'
 require 'dm_prod'
-#require 'library_db'
 require 'model2'
 require 'html_dsl'
 
@@ -34,7 +33,7 @@ class MetaModular < Sinatra::Base
 			s << e.name << "\n"
 			e.save
 		}
-		s
+		redirect "/klass/#{k.first.name}"
 
 	end
 	get '/upload' do
@@ -79,6 +78,20 @@ class MetaModular < Sinatra::Base
 
 	end
 	
+	def nav
+		div(:style => "float:left;border:thin;height:1000px;padding-right:10px;") {
+				b {a "home", :href => "/"}
+				_ "<br>"
+				_ "tests"
+				_ "<br>"
+				Klass.all.each {|k|  #(:is_test => true)
+					link(k) 
+					_ "<br>"
+				}
+		}
+	
+	end
+	
 	def test_table(hash)
 		
 		target,other = :klass,:test
@@ -94,10 +107,14 @@ class MetaModular < Sinatra::Base
 				tr {
 					td link(r.method(other).call)
 					td r.total_time
-					td a(r.pass,:href => "/test/#{r.test.name}/#{r.klass.name}")
+					td a(r.result,:href => "/test/#{r.test.name}/#{r.klass.name}")
 				}
 			}
 		}
+	end
+
+	get '/retest' do
+			TestRun.all.each{|r| r.run}
 	end
 
 	get '/test/:test_name/:klass_name' do
@@ -105,7 +122,11 @@ class MetaModular < Sinatra::Base
 		klass = Klass.first(:name => params[:klass_name])
 		run = TestRun.first(:klass => klass,:test => test)
 		div {
-			h2 "#{link(test)}.test(#{link(klass)})"
+			h2 {
+				link(test)
+				_".test(" 
+				link(klass)
+				_")"}
 			table {
 				tr {
 					th "method"
@@ -132,7 +153,7 @@ class MetaModular < Sinatra::Base
 			body{
 				h1 k.name
 				a  "code", :href => "/code/#{params[:klass_name]}"
-				h2 "tests passed"
+				h2 "tests"
 
 				div test_table(:klass => k)#,:pass=>true)				
 				
@@ -169,6 +190,7 @@ class MetaModular < Sinatra::Base
 #				head {title "Meta-Modular.com"}
 
 				body {
+					nav
 					h1 "Meta-Modular.com"
 					div {
 #					_"<br>\n"
@@ -200,6 +222,7 @@ class MetaModular < Sinatra::Base
 						_"ruby file:"
 						input :type=>"file", :name=>"rb_file"
 						input :type=>"submit", :value=>"send"
+
 					}
 				}
 			}

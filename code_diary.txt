@@ -71,3 +71,23 @@ okay. got the updated stuff in meta-modular.
 	each error.
 	
 	that will mean a test_function model
+	
+	----
+	
+	okay. getting meta-modular app going now...
+	
+	next is actually making it into a useful website... good workflow... good ways to view data.
+
+	wishlist:
+	
+		1. writing code in-browser...
+		2. code syntax hilighting	
+		3. multiple users
+		4. minimum clicks
+		5. flash/textured/elegant look -- we're coding - so maybe something hi-contrast?
+		6. ajax fields.
+		
+		the idea and my competence will bejudged on how the app looks and feels.
+		
+		maybe now is the time wto check out Ruby on Rails?
+		

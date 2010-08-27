@@ -15,8 +15,6 @@ class SmartPrimes2 < Primes
 			while l < n.length
 				n[l] = 0
 				l += k
-				
-				
 			end
 			k += 1
 		end

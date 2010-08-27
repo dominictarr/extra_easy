@@ -1,5 +1,6 @@
 
   require 'rubygems'
+  require 'dm_test'
   require 'meta_modular'
   require 'rack/test'
   require 'test/unit'

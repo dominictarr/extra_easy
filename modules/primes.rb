@@ -27,5 +27,3 @@ def primes
 end
 
 
-#puts '[' + Primes.new(10000).primes.join(',') + ']'
-
