@@ -1,10 +1,12 @@
 sinatra
 open4
+unified_ruby
+ruby_parser
+minitest
 dm-core
 dm-transactions
 dm-postgres-adapter
 dm-validations
-ruby_parser
 dm-validations
 dm-migrations
-minitest
+
