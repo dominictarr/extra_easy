@@ -1,7 +1,7 @@
 sinatra
 open4
-unified_ruby
 ruby_parser
+sexp_processor
 minitest
 dm-core
 dm-transactions
