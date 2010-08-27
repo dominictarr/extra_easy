@@ -2,6 +2,7 @@ require 'rubygems'
 require 'open4'
 require 'quick_attr'
 require 'stdout_catcher'
+require 'sandbox'
 
 class Sandbox 
 extend QuickAttr
