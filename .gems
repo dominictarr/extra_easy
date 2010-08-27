@@ -2,3 +2,4 @@ sinatra
 open4
 dm-core
 dm-transactions
+dm-postgres-adapter
