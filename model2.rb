@@ -180,33 +180,31 @@ class Thing
 	has n, :whatevers, :through => Resource
 end
 
+
 DataMapper.finalize
-DataMapper.auto_migrate! if ARGV.include? "MIGRATE"
+
+
+#DataMapper.auto_migrate! if ARGV.include? "MIGRATE"
 
 #if __FILE__ == $0 then
 #	MetaModular.run! :host => 'localhost', :port => 5678
 #end
 
-rb = RbFile.load_rb('tests/test_adaptable_test.rb')
-t = Klass.first_or_create(
-		:name => 'TestAdaptableTest', 
-		:is_test => true)
+def initialize_database 
+	rb = RbFile.load_rb('tests/test_adaptable_test.rb')
+	t = Klass.first_or_create(
+			:name => 'TestAdaptableTest', 
+			:is_test => true)
 	
-rb.klasses << t
-rb.save
-rb.reload
-t.reload
+	rb.klasses << t
+	rb.save
+	rb.reload
+	t.reload
 
-tr = t.run_test(t) #runs this test on it self... returns a TestRun
-puts tr.pass
-puts tr.inspect
-puts tr.test_run_methods.inspect
-
-#puts rb.parse
-
-#raise "expected TestAdaptableTest.run_test(TestAdaptableTest) to pass" unless tr.pass
-	
-
-
+	tr = t.run_test(t) #runs this test on it self... returns a TestRun
+	puts tr.pass
+	puts tr.inspect
+	puts tr.test_run_methods.inspect
+end
 	
 

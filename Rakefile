@@ -1,9 +1,15 @@
-namespace :db do
-	task :migrate do
-		puts "MIGRATING..."
 		require 'dm_prod'
 		require 'model2'
+
+namespace :db do
+	task :init do
+		initialize_database 
+	end
+
+	task :migrate do
+		puts "MIGRATING..."
 		DataMapper.auto_migrate!
+		initialize_database
 		puts RbFile.all.inspect
 	end
 end
