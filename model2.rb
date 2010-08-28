@@ -77,7 +77,11 @@ require 'rb_parser'
 		end
 
 		def run_all_tests
-			check_is_test
+			if check_is_test then
+			Klass.all.each{|e|
+				self.run_test(e)
+			}				
+			end
 			Klass.all(:is_test => true).each{|e|
 				e.run_test(self)
 			}

@@ -30,6 +30,7 @@ class MetaModular < Sinatra::Base
 	 rb.code
 		k = rb.parse
 		s << "##{k.inspect}"
+		
 #		s = ""
 #		k.each{ |e|
 #			s << e.name << "\n"
@@ -115,8 +116,10 @@ class MetaModular < Sinatra::Base
 		}
 	end
 
-	get '/retest' do
-			TestRun.all.each{|r| r.run}
+	get '/retest/:klass_name' do
+		Klass.first(:name => params[:klass_name]).run_all_tests
+		
+		#	TestRun.all.each{|r| r.run}
 	end
 
 	get '/test/:test_name/:klass_name' do
