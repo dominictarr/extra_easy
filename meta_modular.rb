@@ -117,7 +117,7 @@ class MetaModular < Sinatra::Base
 	end
 
 	get '/retest/:klass_name' do
-		try 
+		begin 
 			Klass.first(:name => params[:klass_name]).run_all_tests
 		rescue Exception => e
 			e.message		
