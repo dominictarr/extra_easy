@@ -1,4 +1,4 @@
-require 'dm_test'
+require 'dm_prod'
 require 'model2'
 require 'model_test'
 
