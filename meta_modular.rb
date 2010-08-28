@@ -26,10 +26,10 @@ class MetaModular < Sinatra::Base
 #		@lib.add(params['class_name'].to_sym)
 		rb = RbFile.load_rb(params['rb_file'][:tempfile])
 		rb.save
-		"#HOPE THIS LOADS THE CODE!" << 
-		rb.code
-#		k = rb.parse
-		
+	s =	"#HOPE THIS LOADS THE CODE!" << 
+	 rb.code
+		k = rb.parse
+		s << "##{k.inspect}"
 #		s = ""
 #		k.each{ |e|
 #			s << e.name << "\n"
