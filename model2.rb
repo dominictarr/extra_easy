@@ -8,8 +8,8 @@ require 'rb_parser'
 		include DataMapper::Resource
 
 #		property :id,         Serial   # An auto-increment integer key
-		property :name,      String, :key => true # A varchar type string, for short strings
-		property :code,       Text     # A text block, for longer string data.
+		#property :name,      String, :key => true # A varchar type string, for short strings
+		property :code,       Text, :key => true     # A text block, for longer string data.
 		property :created_at, DateTime # A DateTime, for any date you might like.
 
 		validates_uniqueness_of :name
