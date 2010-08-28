@@ -106,7 +106,7 @@ class TestModel2 < ModelTest
 		assert tr.pass
 	#	puts tr.test_run_methods.inspect
 		tr.test_run_methods.each{|e|
-			assert_equal ".",e.result
+			assert_equal "pass",e.result
 		}
 		assert 4 < tr.test_run_methods.length
 
@@ -121,14 +121,14 @@ class TestModel2 < ModelTest
 		
 		
 		#for some fucking weird reason the failing test run method evaporates...
-		assert TestRunMethod.all(:result => "F").length > 0,"there should be a \"F\" TestRunMethod somewhere"
+		assert TestRunMethod.all(:result => "Fail.").length > 0,"there should be a \"Fail\" TestRunMethod somewhere"
 		
 		puts "#############################"
 		puts btr.test_run_methods.inspect
 		
 		assert btr.test_run_methods.find{|f|
 #			puts "METHOD NAME #{f.method_name}"
-			f.result == "F" or f.result == "E"
+			f.result == "Fail." or f.result == "ERROR!"
 		}, "expected to find at least one failing test method for BrokePrimes"
 		
 #		btr2 = bp.test_runs.first
@@ -176,14 +176,14 @@ class TestModel2 < ModelTest
 		#TestRunMethod's wernt saving becase the message was too long so save as a string?
 		#when i changed the type to a Text it worked.
 		#ofcourse i expect it to save! DataMapper just fails silently. disapointing.
-		assert TestRunMethod.all(:result => "F").length > 0,"there should be a \"F\" TestRunMethod somewhere"
+		assert TestRunMethod.all(:result => "Fail.").length > 0,"there should be a \"Fail\" TestRunMethod somewhere"
 		
 		puts "#############################"
 		puts btr.test_run_methods.inspect
 		
 	 assert btr.test_run_methods.find{|f|
 		#	puts "METHOD NAME #{f.method_name} => #{f.result}"
-			f.result == "F" or f.result == "E"
+			f.result == "Fail." or f.result == "ERROR!"
 		}, "expected to find at least one failing test method for BrokePrimes"
 		#fail
 		
