@@ -20,16 +20,17 @@ class MetaModular < Sinatra::Base
 
 	post '/submit' do
 		content_type 'text/plain'
-		puts params.inspect
+		#puts params.inspect
 
-#		@lib.add_depends(params['class_name'].to_sym, params['rb_file'][:tempfile])
-#		@lib.add(params['class_name'].to_sym)
 		rb = RbFile.load_rb(params['rb_file'][:tempfile])
 	#	rb.save
-	s =	"#HOPE THIS LOADS THE CODE!" << 
-	 rb.code
+		s = "#HOPE THIS LOADS THE CODE!\n" << 
+		"#" << rb.inspect << 
+		rb.code
 		k = rb.parse
 		s << "##{k.inspect}"
+
+#		rb.save
 		
 #		s = ""
 #		k.each{ |e|
