@@ -32,10 +32,10 @@ class MetaModular < Sinatra::Base
 		s << "##{k.inspect}"
 		
 #		s = ""
-		k.each{ |e|
-			s << e.name << "\n"
-			e.save
-		}
+#		k.each{ |e|
+#			s << e.name << "\n"
+#			e.save
+#		}
 #		redirect "/klass/#{k.first.name}"
 
 	end
