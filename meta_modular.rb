@@ -28,14 +28,14 @@ class MetaModular < Sinatra::Base
 	#	rb.save
 	s =	"#HOPE THIS LOADS THE CODE!" << 
 	 rb.code
-	#	k = rb.parse
-	#	s << "##{k.inspect}"
+		k = rb.parse
+		s << "##{k.inspect}"
 		
 #		s = ""
-#		k.each{ |e|
-#			s << e.name << "\n"
-#			e.save
-#		}
+		k.each{ |e|
+			s << e.name << "\n"
+			e.save
+		}
 #		redirect "/klass/#{k.first.name}"
 
 	end
