@@ -30,7 +30,7 @@ class MetaModular < Sinatra::Base
 		k = rb.parse
 		s << "##{k.inspect}"
 		s << "#HOPE IT'S STILL LOADED!:\n" <<
-		s << rb.reload.inspect
+		s << "SAVED? #{rb.saved?}"
 
 #		rb.save
 		
