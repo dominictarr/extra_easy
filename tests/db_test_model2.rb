@@ -57,6 +57,17 @@ class TestModel2 < ModelTest
 				assert true, tr.pass
 	end
 	
+	def test_parse
+		r = RbFile.load_rb("modules/tests/test_primes.rb")
+		assert r.code
+		puts "#######################"
+		puts r.code
+
+		puts r.parse.inspect
+		puts "#######################"
+		
+	end
+	
 	def test_run_tests
 		tat = Klass.first(:name => :TestAdaptableTest)
 		tp = Klass.create(:name => :TestPrimes, :rb_files => [RbFile.load_rb("modules/tests/test_primes.rb")])
