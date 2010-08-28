@@ -133,7 +133,7 @@ require 'rb_parser'
 						)
 						
 						case trm.result
-							when "fail." then
+							when "Fail." then
 								self.result = trm.result if self.result == "pass"
 							when "ERROR!" then
 								self.result = trm.result
@@ -141,7 +141,12 @@ require 'rb_parser'
 								self.result = "pass"
 							end							
 						time += trm.time_taken
-						raise "NOT SAVED!!!! #{v.inspect}" unless trm.saved? 
+						unless trm.saved? then
+							puts "@@@@@@@@@@@@@@@@@@@@@@@@" 
+							puts "NOT SAVED!!!! #{v.inspect}"
+							puts "@@@@@@@@@@@@@@@@@@@@@@@@" 
+							puts
+						end
 					end
 				}
 				self.total_time = time
