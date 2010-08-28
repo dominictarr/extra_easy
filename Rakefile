@@ -12,6 +12,10 @@ namespace :db do
 		initialize_database
 		puts RbFile.all.inspect
 	end
+	task :test do
+		require 'tests/db_test_model2'
+		#Mini::Test.autorun!
+	end
 end
 
 namespace :heroku do
@@ -27,7 +31,7 @@ namespace :heroku do
 end
 
 
-task :tests do
+task :test do
 	require 'all_tests'
 	run_all_tests
 end
