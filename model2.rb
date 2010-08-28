@@ -112,7 +112,7 @@ require 'rb_parser'
 					test(test.name).
 					klass(klass.name).
 					headers((test.code + klass.code)).
-					run_sandboxed
+					run#_sandboxed
 				puts
 				puts "TEST #{klass.name} ON #{test.name} ==> #{r[:pass]}"
 				puts
@@ -184,7 +184,6 @@ end
 DataMapper.finalize
 
 
-#DataMapper.auto_migrate! if ARGV.include? "MIGRATE"
 
 #if __FILE__ == $0 then
 #	MetaModular.run! :host => 'localhost', :port => 5678
@@ -207,4 +206,8 @@ def initialize_database
 	puts tr.test_run_methods.inspect
 end
 	
+if ARGV.include? "MIGRATE" then
+	DataMapper.auto_migrate! 
+	initialize_database
+end
 

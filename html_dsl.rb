@@ -80,7 +80,7 @@ end
 
 deftag :table,:tr,:th,:td
 
-deftag :div,:span
+deftag :div,:span, :p
 
 deftag :i,:b,:em
 deftag :a

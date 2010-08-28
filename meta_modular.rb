@@ -59,7 +59,7 @@ class MetaModular < Sinatra::Base
 	end
 
 	def test_results (test,klass)
-	
+
 		TestRun.first(:test => r, :klass => k)
 		
 #		v = TestRun.all(:test => k, :pass => true)
@@ -167,9 +167,9 @@ class MetaModular < Sinatra::Base
 	
 	
 	get '/' do
-		puts Klass.all.inspect
+#		puts Klass.all.inspect
 #		puts UnitTest.all.inspect
-		puts TestRun.all.inspect
+#		puts TestRun.all.inspect
 
 		s = ""
 		if params["couple"] then
@@ -223,6 +223,12 @@ class MetaModular < Sinatra::Base
 						input :type=>"file", :name=>"rb_file"
 						input :type=>"submit", :value=>"send"
 
+					}
+					div {
+					$".each{|it|
+						p it
+					}
+					
 					}
 				}
 			}
