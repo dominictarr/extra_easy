@@ -121,7 +121,7 @@ class TestModel2 < ModelTest
 		
 		
 		#for some fucking weird reason the failing test run method evaporates...
-		assert TestRunMethod.all(:result => "Fail.").length > 0,"there should be a \"Fail\" TestRunMethod somewhere"
+		assert TestRunMethod.all(:result => "Fail.").length > 0,"there should be a \"Fail.\" TestRunMethod somewhere"
 		
 		puts "#############################"
 		puts btr.test_run_methods.inspect

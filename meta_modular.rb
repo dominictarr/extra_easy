@@ -26,14 +26,16 @@ class MetaModular < Sinatra::Base
 #		@lib.add(params['class_name'].to_sym)
 		rb = RbFile.load_rb(params['rb_file'][:tempfile])
 		rb.save
-		k = rb.parse
+		"#HOPE THIS LOADS THE CODE!" << 
+		rb.code
+#		k = rb.parse
 		
-		s = ""
-		k.each{ |e|
-			s << e.name << "\n"
-			e.save
-		}
-		redirect "/klass/#{k.first.name}"
+#		s = ""
+#		k.each{ |e|
+#			s << e.name << "\n"
+#			e.save
+#		}
+#		redirect "/klass/#{k.first.name}"
 
 	end
 	get '/upload' do
@@ -187,13 +189,10 @@ class MetaModular < Sinatra::Base
 			s
 		else
 			html {
-#				head {title "Meta-Modular.com"}
-
 				body {
 					nav
 					h1 "Meta-Modular.com"
 					div {
-#					_"<br>\n"
 					h2 "Tests"
 					
 						ol {
