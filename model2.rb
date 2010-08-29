@@ -124,6 +124,7 @@ require 'rb_parser'
 				puts
  				self.pass= r[:pass]
 				time = 0.0
+				self.result = "pass"
 				r.each {|k,v|
 					if v.is_a? Hash then
 					

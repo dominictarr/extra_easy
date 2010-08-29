@@ -1,12 +1,13 @@
 require 'test/unit'
 require 'modules/factors'
 #require 'modules/fast_factors'
-class TestFactors < Test::Unit::TestCase
+class TestFactors < AdaptableTest
 
 #const_set(:Factors,FastFactors)
+	def default_subject; Factors; end
 
 def test_factors_prime
-	fac = Factors.new
+	fac = subject.new
 	assert_equal [2], fac.factors(2)
 	assert_equal [3], fac.factors(3)
 	assert_equal [5], fac.factors(5)
@@ -14,7 +15,7 @@ def test_factors_prime
 end
 
 def test_factors_even
-	fac = Factors.new
+	fac = subject.new
 	assert_equal [2,2], fac.factors(4)
 	assert_equal [2,3], fac.factors(6)
 	assert_equal [2,2,2], fac.factors(8)
@@ -24,7 +25,7 @@ def test_factors_even
 end
 
 def test_factors_odd
-	fac = Factors.new
+	fac = subject.new
 	assert_equal [3,3], fac.factors(9)
 	assert_equal [3,5], fac.factors(15)
 	assert_equal [3,7], fac.factors(21)
@@ -40,7 +41,7 @@ def test_factors_odd
 end
 
 def test_factors_large
-	fac = Factors.new
+	fac = subject.new
 	assert_equal [3,3,11], fac.factors(99)
 	assert_equal [2,2,2,2,2,2,2], fac.factors(128)
 	assert_equal [2,3,47], fac.factors(282)

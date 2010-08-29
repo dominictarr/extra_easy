@@ -19,27 +19,14 @@ class MetaModular < Sinatra::Base
 #	end
 
 	post '/submit' do
-		content_type 'text/plain'
-		#puts params.inspect
+#		content_type 'text/plain'
 
 		rb = RbFile.load_rb(params['rb_file'][:tempfile])
-	#	rb.save
+
 		s = "#HOPE THIS LOADS THE CODE!\n" << 
 		"#" << rb.inspect << 
-		rb.code
 		k = rb.parse
-		s << "##{k.inspect}"
-		s << "#HOPE IT'S STILL LOADED!:\n" <<
-		s << "SAVED? #{rb.saved?}"
-
-#		rb.save
-		
-#		s = ""
-#		k.each{ |e|
-#			s << e.name << "\n"
-#			e.save
-#		}
-#		redirect "/klass/#{k.first.name}"
+		redirect "/klass/#{k.first.name}"
 
 	end
 	get '/upload' do
@@ -232,12 +219,6 @@ class MetaModular < Sinatra::Base
 						input :type=>"file", :name=>"rb_file"
 						input :type=>"submit", :value=>"send"
 
-					}
-					div {
-					$".each{|it|
-						p it
-					}
-					
 					}
 				}
 			}
