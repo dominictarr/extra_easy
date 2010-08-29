@@ -8,8 +8,8 @@ require 'rb_parser'
 		include DataMapper::Resource
 
 #		property :id,         Serial   # An auto-increment integer key
-		#property :name,      String, :key => true # A varchar type string, for short strings
-		property :code,       Text, :key => true     # A text block, for longer string data.
+		property :code_hash,      Integer, :key => true # a hash of the code
+		property :code,       Text	     # A text block, for longer string data.
 		property :created_at, DateTime # A DateTime, for any date you might like.
 
 		validates_uniqueness_of :name
@@ -24,7 +24,7 @@ require 'rb_parser'
 			r.classes.each{|e|
 				k = Klass.first_or_create(:name => e)
 				k.rb_files << self unless k.rb_files.include? self
-				#k.run_all_tests
+				k.run_all_tests
 			#	puts "UPDATED: #{k.name}"
 				added << k
 			}
@@ -35,7 +35,8 @@ require 'rb_parser'
 			if file.is_a? String then
 				file = File.open(file)
 			end
-			r = RbFile.first_or_create(:code => file.read)
+			code = file.read
+			r = RbFile.first_or_create(:code => code, :code_hash => code.hash)
 			
 			r.save
 			file.close

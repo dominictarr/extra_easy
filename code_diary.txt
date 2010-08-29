@@ -89,5 +89,28 @@ okay. got the updated stuff in meta-modular.
 		
 		the idea and my competence will bejudged on how the app looks and feels.
 		
-		maybe now is the time wto check out Ruby on Rails?
+		maybe now is the time to check out Ruby on Rails?
 		
+	okay, I had a little look at RoR, decided it was quite complicated.  tried camping, decided it was too clever.
+	
+	#
+	keep on going with sinatra, then deployed to H. nothing worked. begining to figure it out now, but, it's messy.
+	
+	I'll simplify the model: get rid of RbFile... just store the classes code in it - don't do files or monkey patching.
+	enter code into a text field. emphasize small. maybe don't even allow requires?
+	
+	hmm. must give this a think - oh yeah, remember functions in class decs:
+	
+		class Page < R (...)
+		
+	what if it was
+		
+		class Something < couple (:some_special_test,...)
+		
+	next:
+	
+		Simplify heroku.
+		compromise for ease
+		instead of uploading files,
+			enter code into a text box.
+			

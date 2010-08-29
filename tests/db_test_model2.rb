@@ -60,12 +60,15 @@ class TestModel2 < ModelTest
 	def test_parse
 		r = RbFile.load_rb("modules/tests/test_primes.rb")
 		assert r.code
-		puts "#######################"
+		assert r.code.include? "TestPrimes"
+#		puts "#######################"
 		puts r.code
-
-		puts r.parse.inspect
-		puts "#######################"
 		
+		klasses =  r.parse
+#		puts "#######################"
+		assert_equal 1, klasses.length 
+
+		klasses.first.code == r.code
 	end
 	
 	def test_run_tests
