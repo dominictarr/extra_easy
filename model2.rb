@@ -24,6 +24,7 @@ require 'rb_parser'
 			r.classes.each{|e|
 				k = Klass.first_or_create(:name => e)
 				k.rb_files << self unless k.rb_files.include? self
+				k.save
 				k.run_all_tests
 			#	puts "UPDATED: #{k.name}"
 				added << k
