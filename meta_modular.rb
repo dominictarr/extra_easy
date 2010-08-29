@@ -26,8 +26,8 @@ class MetaModular < Sinatra::Base
 		s = "#HOPE THIS LOADS THE CODE!\n" << 
 		"#" << rb.inspect << 
 		k = rb.parse
+		"loaded #{k.map{|m| m.name}.join(",")}, redirecting..."
 		redirect "/klass/#{k.first.name}"
-
 	end
 	get '/upload' do
 		%{
