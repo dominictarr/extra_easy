@@ -9,22 +9,12 @@ class MetaModular < Sinatra::Base
 	include HtmlDsl
 	def initialize(app=nil)
 		super(app)
-#		puts "INITIALIZE"
-#	@lib = LibraryDb.new
 	end
-#enable :inline_templates
-
-#	def test_subs
-#		@lib.passes
-#	end
 
 	post '/submit' do
-#		content_type 'text/plain'
 
 		rb = RbFile.load_rb(params['rb_file'][:tempfile])
 
-		s = "#HOPE THIS LOADS THE CODE!\n" << 
-		"#" << rb.inspect << 
 		k = rb.parse
 		"loaded #{k.map{|m| m.name}.join(",")}, redirecting..."
 		redirect "/klass/#{k.first.name}"
