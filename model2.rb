@@ -118,7 +118,7 @@ require 'rb_parser'
 					test(test.name).
 					klass(klass.name).
 					headers((test.code + klass.code)).
-					run#_sandboxed
+					run_sandboxed
 				puts
 				puts "TEST #{klass.name} ON #{test.name} ==> #{r[:pass]}"
 				puts
