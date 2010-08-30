@@ -7,14 +7,14 @@ require 'rb_parser'
   class RbFile
 		include DataMapper::Resource
 
-#		property :id,         Serial   # An auto-increment integer key
-		property :code_hash,      Integer, :key => true # a hash of the code
-		property :code,       Text	     # A text block, for longer string data.
-		property :created_at, DateTime # A DateTime, for any date you might like.
+		property :id,      	Serial
+		property :code_hash, Integer # a hash of the code
+		property :code,      Text	     # A text block, for longer string data.
+		property :created_at,DateTime # A DateTime, for any date you might like.
 
 		validates_uniqueness_of :name
 
-		has n, :klasses, :through => Resource
+		has n, :klasses
 
 		def parse
 			r = ClassHerd::RbParser.new(code).parse
@@ -22,8 +22,9 @@ require 'rb_parser'
 			#puts r.classes
 			added = []
 			r.classes.each{|e|
+				#make an error if the class is already defined in a different file?
 				k = Klass.first_or_create(:name => e)
-				k.rb_files << self unless k.rb_files.include? self
+				k.rb_file = self
 				k.save
 				k.run_all_tests
 			#	puts "UPDATED: #{k.name}"
@@ -53,8 +54,9 @@ require 'rb_parser'
 		property :is_test,Boolean
 
 		validates_uniqueness_of :name
+		validates_presence_of	:name
 
-		has n,:rb_files, :through => Resource
+		belongs_to :rb_file
 		has n, :test_runs
 		has n, :this_test_runs, 'TestRun', :child_key => ['test_id']
 		
@@ -90,7 +92,7 @@ require 'rb_parser'
 		end
 
 		def code 
-			rb_files.collect{|f| f.code}.join("\n")
+			rb_file.code
 		end
 
 		def tests_passed
@@ -113,57 +115,54 @@ require 'rb_parser'
 		property :result,	String
 
 		def run
+			r =  Tester.new.
+				test(test.name).
+				klass(klass.name).
+				headers((test.code + klass.code)).
+				run_sandboxed
+
+			self.pass= r[:pass]
+			time = 0.0
+			self.result = "pass"
+			self.save
+			raise "#{self.inspect} NOT SAVED!!!" unless self.saved?
+
+			r.each {|k,v|
+				if v.is_a? Hash then
 				
-				r =  Tester.new.
-					test(test.name).
-					klass(klass.name).
-					headers((test.code + klass.code)).
-					run_sandboxed
-				puts
-				puts "TEST #{klass.name} ON #{test.name} ==> #{r[:pass]}"
-				puts
- 				self.pass= r[:pass]
-				time = 0.0
-				self.result = "pass"
-				r.each {|k,v|
-					if v.is_a? Hash then
+					trm = TestRunMethod.first_or_create({
+							:method_name => v[:method], 
+							:test_run => self},
+							{
+							:error => v[:error],
+							:message => v[:message],
+							:trace => v[:trace],
+							:result => v[:result],
+							:time_taken => v[:time],
+							:output => v[:output]
+							}
+					)
 					
-						trm = TestRunMethod.first_or_create({
-								:method_name => v[:method], 
-								:test_run => self},
-								{:error => v[:error],
-								:message => v[:message],
-								:trace => v[:trace],
-								:result => v[:result],
-								:time_taken => v[:time],
-								:output => v[:output]}
-						)
-						
-						case trm.result
-							when "Fail." then
-								self.result = trm.result if self.result == "pass"
-							when "ERROR!" then
-								self.result = trm.result
-							else
-								self.result = "pass"
-							end							
-						time += trm.time_taken
-						unless trm.saved? then
-							puts "@@@@@@@@@@@@@@@@@@@@@@@@" 
-							puts "NOT SAVED!!!! #{v.inspect}"
-							puts "@@@@@@@@@@@@@@@@@@@@@@@@" 
-							puts
-						end
+					case trm.result
+						when "Fail." then
+							self.result = trm.result if self.result == "pass"
+						when "ERROR!" then
+							self.result = trm.result
+						else
+							self.result = "pass"
+						end							
+					time += trm.time_taken
+					unless trm.saved? then
+						raise "#{trm.inspect} NOT SAVED!!!!  #{v[:method]}"
 					end
-				}
-				self.total_time = time
-				puts
-				puts "Test #{klass.name} on #{test.name} => #{pass} in #{total_time}"
-				puts
- 				
-				save
-				reload
-				r[:pass]
+				end
+			}
+			self.total_time = time
+			puts "Test #{klass.name} on #{test.name} => #{pass} in #{total_time}"
+			
+			save
+			reload
+			r[:pass]
 		end
 
 	end
@@ -194,12 +193,6 @@ end
 
 
 DataMapper.finalize
-
-
-
-#if __FILE__ == $0 then
-#	MetaModular.run! :host => 'localhost', :port => 5678
-#end
 
 def initialize_database 
 	rb = RbFile.load_rb('tests/test_adaptable_test.rb')

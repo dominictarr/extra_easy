@@ -2,7 +2,7 @@
 		require 'model2'
 
 namespace :db do
-	task :init do
+	task :init => [:migrate] do
 		initialize_database 
 	end
 

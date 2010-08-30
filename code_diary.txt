@@ -114,3 +114,84 @@ okay. got the updated stuff in meta-modular.
 		instead of uploading files,
 			enter code into a text box.
 			
+	got heroku working. but havn't done the "next" stuff yet.
+			
+	################################################################
+			
+		Hanging out with greg last night, playing around making a text adventure prototype
+			
+			
+		could make it object orientated, and i think ruby could be very well suited to this,
+		especially considering eval & heroku.
+		
+		the basic question is a parser. there are actions, look, go, use, take etc. which the player can do
+		
+		and each room contains a bunch of things. a room is a thing. other things can contain things, but may be
+		too small to contain certain things. when you are in a room you can interact with the room or things in it...
+		
+		say: verb object
+		
+		#verbs are functions things have has... it simply looks through thier methods.
+		
+		object is things which are in the scene. the room, things in the room. possibly things in the things. the containers get to decide what sticks out.
+		
+		look object
+		
+		take object
+		
+		drop object
+		
+		put object container
+		
+		give object character
+		
+		use object object (key, lock... [direct object] [indirect object])
+		
+		refur to objects by thier class, or if it is ambigious, by there qualities 
+		
+		open red door
+		open blue door
+		use blue key blue door
+		
+		to make it simpler to parse:
+		
+		use blue-key blue-door
+		
+		what if there was a "blue" and a door so the parser didn't know if it said "use blue (on) door" or "use blue door"
+		you could optionally include hyphens or (on,with,for,to to join direct object to in direct object)
+		
+		use as many qualities as necessary to make it unambigious:
+		
+		use big-blue-key etc...
+		
+		or
+		
+		use big key
+		
+		clearly, inside you use doors to go from room to room. outside you could use this also... but just have objects like paths
+		
+		north road, south road etc.
+		
+		"go south" would be unambigious.
+		
+	################################################################
+	
+	
+	next steps:
+	
+		fit ruby code into atomic units with no il-defined outsite dependencies.
+		
+		all outside dependencies must be via couple
+			couple 'test_name'/'class_name'
+		3 levels of granularity:
+			~ a method
+			~ a class
+			~ a module
+			
+		except for core or meta-modular objects, all dependencies must be from this.
+			- boot strap couple as superclass later!
+			
+			-extract modules, classes and methods while parsing.
+			-create web app text editor for editing objects.
+			
+			allow one block of code to contain multiple methods

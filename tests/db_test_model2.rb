@@ -6,9 +6,10 @@ class TestModel2 < ModelTest
 	def default_subject; NilClass; end
 
 	def test_klass
-		test_x = Klass.create(:name => 'TestX')
+		rb = RbFile.create(:code_hash => 13459238, :code => "whatever")
+		test_x = Klass.create(:name => 'TestX', :rb_file =>  rb)
 		
-		x = Klass.create(:name => 'X')
+		x = Klass.create(:name => 'X', :rb_file =>  rb)
 
 		assert test_x.saved?
 		assert x.saved?
@@ -17,7 +18,6 @@ class TestModel2 < ModelTest
 		assert tr.saved?
 
 		TestRunMethod.create(:test_run => tr, :method_name => "test_hello")
-		
 
 		assert_equal [tr], test_x.this_test_runs
 		assert_equal [tr], x.test_runs
@@ -25,8 +25,8 @@ class TestModel2 < ModelTest
 		assert_equal [x], test_x.klasses_passed
 		assert_equal [test_x], x.tests_passed
 
-		y = Klass.create(:name => 'Y')
-		test_y = Klass.create(:name => 'TestY')
+		y = Klass.create(:name => 'Y', :rb_file =>  rb)
+		test_y = Klass.create(:name => 'TestY', :rb_file => rb)
 
 		assert y.saved?
 		tr2 = TestRun.create(:klass => y, :test => test_x, :pass => false)
@@ -42,10 +42,8 @@ class TestModel2 < ModelTest
 		test_x.reload
 		assert_equal [tr,tr2], test_x.this_test_runs
 
-		puts TestRun.all.inspect
 		assert_equal [test_x,test_y], x.tests_passed
 		assert_equal [], y.tests_passed
-
 		assert_equal [x], test_x.klasses_passed
 	end
 	
@@ -61,11 +59,9 @@ class TestModel2 < ModelTest
 		r = RbFile.load_rb("modules/tests/test_primes.rb")
 		assert r.code
 		assert r.code.include? "TestPrimes"
-#		puts "#######################"
-		puts r.code
-		
+
 		klasses =  r.parse
-#		puts "#######################"
+
 		assert_equal 1, klasses.length 
 
 		klasses.first.code == r.code
@@ -73,10 +69,10 @@ class TestModel2 < ModelTest
 	
 	def test_run_tests
 		tat = Klass.first(:name => :TestAdaptableTest)
-		tp = Klass.create(:name => :TestPrimes, :rb_files => [RbFile.load_rb("modules/tests/test_primes.rb")])
+		tp = Klass.create(:name => :TestPrimes, :rb_file => RbFile.load_rb("modules/tests/test_primes.rb"))
 		
-		p = Klass.create(:name => :Primes, :rb_files => [RbFile.load_rb("modules/primes.rb")])
-		sp = Klass.create(:name => :SmartPrimes, :rb_files => [RbFile.load_rb("modules/smart_primes.rb")])
+		p = Klass.create(:name => :Primes, :rb_file => RbFile.load_rb("modules/primes.rb"))
+		sp = Klass.create(:name => :SmartPrimes, :rb_file => RbFile.load_rb("modules/smart_primes.rb"))
 		tp.run_all_tests
 		p.run_all_tests
 		sp.run_all_tests
@@ -107,7 +103,7 @@ class TestModel2 < ModelTest
 		
 		tr = TestRun.first(:test => tp, :klass => p)
 		assert tr.pass
-	#	puts tr.test_run_methods.inspect
+
 		tr.test_run_methods.each{|e|
 			assert_equal "pass",e.result
 		}
@@ -116,36 +112,17 @@ class TestModel2 < ModelTest
 		klasses += RbFile.load_rb("modules/broke_primes.rb").parse
 
 		bp = Klass.first(:name => :BrokePrimes)
-		puts bp.inspect
+
 		btr = bp.test_runs.first(:test => tp)
 		assert_equal bp, btr.klass
 		assert_equal tp, btr.test
 		assert_equal false,btr.pass
 		
-		
 		#for some fucking weird reason the failing test run method evaporates...
 		assert TestRunMethod.all(:result => "Fail.").length > 0,"there should be a \"Fail.\" TestRunMethod somewhere"
-		
-		puts "#############################"
-		puts btr.test_run_methods.inspect
-		
 		assert btr.test_run_methods.find{|f|
-#			puts "METHOD NAME #{f.method_name}"
 			f.result == "Fail." or f.result == "ERROR!"
 		}, "expected to find at least one failing test method for BrokePrimes"
-		
-#		btr2 = bp.test_runs.first
-#		assert btr2
-#		assert_equal bp, btr2.klass
-#		assert_equal Klass.first(:name => :TestAdaptable, btr2.klass
-#		puts "test Broke Primes (on #{btr2.test.name})"
-#		puts btr2.test.inspect
-#		assert_equal tp, 
-		
-#		puts "test Broke Primes (on #{btr2.test.name})"
-#		puts btr2.test_run_methods.inspect
-#		assert 0 == btr2.test_run_methods.length
-#		assert_equal false,btr2.pass
 		
 	end
 
@@ -161,11 +138,6 @@ class TestModel2 < ModelTest
 		sp = Klass.first(:name => :SmartPrimes)
 		
 		tr = TestRun.first(:test => tp, :klass => p)
-#		assert tr.pass
-#		tr.test_run_methods.each{|e|
-#			assert_equal ".",e.result
-#		}
-
 
 		bp = Klass.first(:name => :BrokePrimes)
 
@@ -181,15 +153,9 @@ class TestModel2 < ModelTest
 		#ofcourse i expect it to save! DataMapper just fails silently. disapointing.
 		assert TestRunMethod.all(:result => "Fail.").length > 0,"there should be a \"Fail\" TestRunMethod somewhere"
 		
-		puts "#############################"
-		puts btr.test_run_methods.inspect
-		
 	 assert btr.test_run_methods.find{|f|
-		#	puts "METHOD NAME #{f.method_name} => #{f.result}"
 			f.result == "Fail." or f.result == "ERROR!"
 		}, "expected to find at least one failing test method for BrokePrimes"
-		#fail
-		
 	end
 
 	
@@ -214,4 +180,6 @@ class TestModel2 < ModelTest
 	end
 end
 
-Mini::Test.autorun
+if __FILE__ == $0 then
+	Mini::Test.autorun
+end
