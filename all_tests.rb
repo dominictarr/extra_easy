@@ -16,9 +16,8 @@ def run_all_tests
 	#tests = tests - ["class_herd/test_rewire2.rb","class_herd/test_interface.rb"]
 	tests.each{|test|
 		Mini::Test.autorun
-		puts "@@@@@@@@@@@@@@@@@@@@"
 		puts test
-		puts "@@@@@@@@@@@@@@@@@@@@"
+		puts
 				
 		require test
 		}
