@@ -5,6 +5,8 @@ require 'dm_prod'
 require 'model2'
 require 'html_dsl'
 require 'modules/stdout_catcher'
+require 'rb_parser'
+require 'adaptable_test'
 
 class MetaModular < Sinatra::Base
 	include HtmlDsl
@@ -48,9 +50,31 @@ class MetaModular < Sinatra::Base
 				input :type=>"submit", :name=>"test", :value=>"test"
 			}
 			returned = nil
-			out = StdoutCatcher.catch_out{
-				returned = eval(params[:code]) if params[:code]
-			}
+			parsed = nil
+			begin
+
+				parsed = ClassHerd::RbParser.new(params[:code]).parse
+			rescue Exception => e
+				h2 e.class
+				i e.message
+				div e.backtrace.join("<br>")
+			#just catch the regular ruby syntax error.
+			end
+				if parsed then
+				h2 "parsed:"
+					i parsed.classes.join(", ") 
+				end
+			begin
+				out = StdoutCatcher.catch_out{
+					returned = eval(params[:code]) if params[:code]
+				}
+			rescue Exception => e
+			h2 e.class
+			i e.message
+			div e.backtrace.join("<br>")
+			
+			end
+
 			h2 "output..."
 			code (:lang => "ruby") {
 				_ out

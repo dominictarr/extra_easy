@@ -38,7 +38,7 @@ class Tester
 			}
 			returned[:output] = o
 			result[m] = returned
-			r = false unless result[m][:result] == "pass"  #here is checks for a pass.
+			r = false unless result[m][:result] == "pass" #here is checks for a pass.
 		}
 		result[:pass] = r
 		result
@@ -63,20 +63,18 @@ class Tester
 		sb.code << "require 'rubygems'\n"
 		sb.code << "require 'mini/test'\n"
 		sb.code << "require 'tester'\n"
+		sb.code << "module ASandBoxedTest\n" 
 		headers.each{|r|
 			sb.code << "#{r}\n"
 		}
-#		sb.code << "
-#		result = {:pass => true}\n" + 
-		#~ #{test}.test_methods.each{|m|
-		#~ 	r = false unless #{test}.new(m).adapt(#{klass}) == \".\"
-#		"#{test}.test_methods.each{|m|
-#			result[m] = #{test}.new(m).adapt(#{klass})
-#			result[:pass] = false unless result[m][:result] == \".\"  #here is checks for a pass.
-#		}
-#		result
-#		"
-		sb.code << "Tester.new.test(#{test}).klass(#{klass}).run"
+		sb.code << "def self.run_test;
+		Tester.new.test(#{test}).klass(#{klass}).run; 
+		end\n"
+	
+		sb.code << "end\n"
+		sb.code << "ASandBoxedTest::run_test\n"
+
+#		sb.code << "self.run_test\n"
 		#puts sb.code
 		sb.run
 
