@@ -25,7 +25,7 @@ end
 def attrs (hash)
 	
 	s = ""
-	hash.each{|k,v|
+	hash.sort{|x,y| x.to_s <=> y.to_s}.each{|k,v|
 		s << " #{k}=\"#{v}\""
 	}
 	s

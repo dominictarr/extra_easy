@@ -38,7 +38,7 @@ class Tester
 			}
 			returned[:output] = o
 			result[m] = returned
-			r = false unless result[m][:result] == "pass" #here is checks for a pass.
+			r = false unless result[m][:result] == "pass"  #here is checks for a pass.
 		}
 		result[:pass] = r
 		result
@@ -67,12 +67,12 @@ class Tester
 		headers.each{|r|
 			sb.code << "#{r}\n"
 		}
-		sb.code << "def self.run_test;
+		sb.code << "def self.run_test_324923897498234723249;
 		Tester.new.test(#{test}).klass(#{klass}).run; 
 		end\n"
 	
 		sb.code << "end\n"
-		sb.code << "ASandBoxedTest::run_test\n"
+		sb.code << "ASandBoxedTest::run_test_324923897498234723249\n"
 
 #		sb.code << "self.run_test\n"
 		#puts sb.code

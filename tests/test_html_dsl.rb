@@ -17,7 +17,7 @@ class TestHtmlDsl < AdaptableTest
 	end
 	
 	def test_tag
-		assert_same "<h a=\"1\" b=\"2\">hello</h>", tag(:h,:a => 1, :b => 2) {_ "hello"}
+		assert_same "<h a=\"1\" b=\"2\">hello</h>", tag(:h,:a => 1, :b => 2) {_ "hello"} #sort tags so order is conanical.
 	end
 
 	def test_multitag
