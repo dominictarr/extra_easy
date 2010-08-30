@@ -1,7 +1,7 @@
  require "adaptable_test"
 # require "modules/primes"
 # require "modules/dynamic_primes2"
- require "modules/smart_primes3"
+# require "modules/smart_primes3"
 
 #  	include TestSL
 #  	extend TestSL

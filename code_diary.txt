@@ -205,3 +205,11 @@ okay. got the updated stuff in meta-modular.
 				after testing I can remove the module... and put that module inside another one, with shadowed Kernel, etc.
 				
 				
+	okay, I got a text editor pane. 
+	my interface is really combersome though. 
+	I should spend a few days tidying it up.
+	
+	another big problem is the tester does not report the pass result properly!!!
+	it's says pass when there is a fail!
+				
+				

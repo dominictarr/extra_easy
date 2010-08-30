@@ -8,11 +8,13 @@ require 'rb_parser'
 		include DataMapper::Resource
 
 		property :id,      	Serial
+		property :name, 		String # a hash of the code
 		property :code_hash, Integer # a hash of the code
 		property :code,      Text	     # A text block, for longer string data.
 		property :created_at,DateTime # A DateTime, for any date you might like.
 
 		validates_uniqueness_of :name
+		validates_uniqueness_of :code_hash
 
 		has n, :klasses
 
@@ -38,7 +40,7 @@ require 'rb_parser'
 				file = File.open(file)
 			end
 			code = file.read
-			r = RbFile.first_or_create(:code => code, :code_hash => code.hash)
+			r = RbFile.first_or_create(:code => code, :code_hash => code.hash, :name => "ruby_#{code.hash}")
 			
 			r.save
 			file.close

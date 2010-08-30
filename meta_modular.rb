@@ -1,4 +1,3 @@
-
 require 'rubygems'
 require 'sinatra/base'
 require 'dm_prod'
@@ -15,7 +14,6 @@ class MetaModular < Sinatra::Base
 	end
 
 	post '/submit' do
-
 		rb = RbFile.load_rb(params['rb_file'][:tempfile])
 
 		k = rb.parse
@@ -40,10 +38,27 @@ class MetaModular < Sinatra::Base
 		Klass.first(:name => params[:klass]).code
 	end
 
-	def editor 
+	def editor
+			parse_error = nil
+			rb = nil
+		if params[:code] and params[:name]
+			rb = RbFile.first_or_create({:name => params[:name]},{:code => params[:code], :code_hash => params[:code].hash})
+
+
+			begin
+				rb.parse
+			rescue Exception => e 
+				parse_error = e
+			end
+			
+		end
+	
 		div {
 			h1 "code"
 			form(:action => "/editor", :enctype => "multipart/form-data", :method => "post") {
+				_"save as" 
+				input :type=>"textbox", :name=>"name", :value=>params[:name]
+				br
 				textarea params[:code], :name=>"code", :cols=>80, :rows=>30
 				br
 				input :type=>"submit", :name=>"save", :value=>"save"
@@ -51,8 +66,8 @@ class MetaModular < Sinatra::Base
 			}
 			returned = nil
 			parsed = nil
-			begin
 
+			begin
 				parsed = ClassHerd::RbParser.new(params[:code]).parse
 			rescue Exception => e
 				h2 e.class
@@ -60,8 +75,18 @@ class MetaModular < Sinatra::Base
 				div e.backtrace.join("<br>")
 			#just catch the regular ruby syntax error.
 			end
+				if parse_error then
+						h2 "#{parse_error.class} (error while parsing)"
+						i parse_error.message
+						div parse_error.backtrace.join("<br>")
+				elsif rb
+					test_results_for_class (rb.klasses.first)				
+				end
+					
+					
+				
 				if parsed then
-				h2 "parsed:"
+					h2 "parsed:"
 					i parsed.classes.join(", ") 
 				end
 			begin
@@ -69,10 +94,9 @@ class MetaModular < Sinatra::Base
 					returned = eval(params[:code]) if params[:code]
 				}
 			rescue Exception => e
-			h2 e.class
-			i e.message
-			div e.backtrace.join("<br>")
-			
+				h2 e.class
+				i e.message
+				div e.backtrace.join("<br>")
 			end
 
 			h2 "output..."
@@ -97,11 +121,11 @@ class MetaModular < Sinatra::Base
 		a l, :href => "/klass/#{klass.name}"
 	end
 
+
 	def test_results (test,klass)
 
 		TestRun.first(:test => r, :klass => k)
 		
-#		v = TestRun.all(:test => k, :pass => true)
 		table {
 			tr {
 				th "Class"
@@ -172,21 +196,46 @@ class MetaModular < Sinatra::Base
 				_".test(" 
 				link(klass)
 				_")"}
+				
 			table {
 				tr {
 					th "method"
 					th "time"
 					th "result"
+					th "error"
+					th "message"
 				}
 				run.test_run_methods.each{|e|
 					tr{
 						td e.method_name
 						td e.time_taken
 						td e.result, :class=>e.result
-					}			
+						td e.error
+						td e.message
+					}
+					if e.error then
+						tr{
+							td (:COLSPAN=>5) {
+								code e.trace.split("\n").join("<br>")
+							}
+						}
+					end
 				}		
 			}		
 		}
+	end
+
+	def test_results_for_class (k)
+	
+				h2 "tests"
+
+				div test_table(:klass => k)#,:pass=>true)				
+				
+				if k.is_test then
+					h2 "classes passed"
+					div test_table(:test => k,:pass=>true)
+				end
+	
 	end
 
 
@@ -198,14 +247,8 @@ class MetaModular < Sinatra::Base
 			body{
 				h1 k.name
 				a  "code", :href => "/code/#{params[:klass_name]}"
-				h2 "tests"
+				test_results_for_class(k)
 
-				div test_table(:klass => k)#,:pass=>true)				
-				
-				if k.is_test then
-					h2 "classes passed"
-					div test_table(:test => k,:pass=>true)
-				end
 			}
 		}
 	end
