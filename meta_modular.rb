@@ -37,13 +37,24 @@ class MetaModular < Sinatra::Base
 		Klass.first(:name => params[:klass]).code
 	end
 
-	get '/editor' do
-		form(:action => "./submit", :enctype => "multipart/form-data", :method => "post") {
+	def editor 
+		form(:action => "./editor", :enctype => "multipart/form-data", :method => "post") {
 			input :type=>"textbox", :value=>"code"
 			input :type=>"submit", :value=>"save"
 			input :type=>"submit", :value=>"test"
 
 		}
+	
+	end
+
+	post '/editor' do
+		div{
+			input :type=>"textbox", :value=> params.inspect
+			editor		
+		}
+	end 
+	get '/editor' do
+		editor		
 	end
 
 	def link(klass,l=klass.name)
