@@ -25,7 +25,6 @@ def test_default
 	m.each{|n|
 		_default = subject.new(n).adapt
 		assert_equal "pass",_default[:result], "expected default class to pass"
-		assert _nil != "pass"
 	}
 	assert m.length > 0	
 end
