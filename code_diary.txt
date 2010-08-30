@@ -195,3 +195,13 @@ okay. got the updated stuff in meta-modular.
 			-create web app text editor for editing objects.
 			
 			allow one block of code to contain multiple methods
+			
+	okay, got a text area running on localhost. 
+	will try it on heroku
+	
+	also! stumbled upon way to remove constants.
+		~ now since i've determined to have a well defined module and ban monkey patching, 
+				then I think I could wrap every thing in a module and it will work.
+				after testing I can remove the module... and put that module inside another one, with shadowed Kernel, etc.
+				
+				

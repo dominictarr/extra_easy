@@ -93,7 +93,13 @@ deftag :html,:head,:body
 
 deftag :ul,:ol,:li
 
-deftag :form,:input
+deftag :form,:input, :textarea
+
+deftag :code
+
+def br
+	_"<br>"
+end
 
 #use meta programming to create other tags.
 #also... execute blocks in context of some class... so you can see all the tags created within a tag?

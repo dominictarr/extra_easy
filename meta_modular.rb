@@ -4,6 +4,7 @@ require 'sinatra/base'
 require 'dm_prod'
 require 'model2'
 require 'html_dsl'
+require 'modules/stdout_catcher'
 
 class MetaModular < Sinatra::Base
 	include HtmlDsl
@@ -21,7 +22,7 @@ class MetaModular < Sinatra::Base
 	end
 	get '/upload' do
 		%{
-			<form action="./submit" enctype="multipart/form-data" method="post" >
+			<form action="/submit" enctype="multipart/form-data" method="post" >
 			ruby file:
 			<input type=file name="rb_file">
 			<input type=submit  value="Send">
@@ -38,22 +39,31 @@ class MetaModular < Sinatra::Base
 	end
 
 	def editor 
-		form(:action => "./editor", :enctype => "multipart/form-data", :method => "post") {
-			input :type=>"textbox", :value=>"code"
-			input :type=>"submit", :value=>"save"
-			input :type=>"submit", :value=>"test"
+		div {
+			h1 "code"
+			form(:action => "/editor", :enctype => "multipart/form-data", :method => "post") {
+				textarea params[:code], :name=>"code", :cols=>80, :rows=>30
+				br
+				input :type=>"submit", :name=>"save", :value=>"save"
+				input :type=>"submit", :name=>"test", :value=>"test"
+			}
+			returned = nil
+			out = StdoutCatcher.catch_out{
+				returned = eval(params[:code]) if params[:code]
+			}
+			h2 "output..."
+			code (:lang => "ruby") {
+				_ out
+			}
+			h2 "returned..."
+			code (:lang => "ruby") {
+				_ returned.inspect
+			}
 		}
 	end
 
 	post '/editor' do
-		content_type 'text/plain'
-
-		
-#		div{
-#			input :type=>"textbox", :value=> params.inspect
-#			editor		
-#		}
-		params.inspect
+		editor	
 	end 
 	get '/editor' do
 		editor		
