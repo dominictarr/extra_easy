@@ -42,16 +42,18 @@ class MetaModular < Sinatra::Base
 			input :type=>"textbox", :value=>"code"
 			input :type=>"submit", :value=>"save"
 			input :type=>"submit", :value=>"test"
-
 		}
-	
 	end
 
 	post '/editor' do
-		div{
-			input :type=>"textbox", :value=> params.inspect
-			editor		
-		}
+		content_type 'text/plain'
+
+		
+#		div{
+#			input :type=>"textbox", :value=> params.inspect
+#			editor		
+#		}
+		params.inspect
 	end 
 	get '/editor' do
 		editor		
