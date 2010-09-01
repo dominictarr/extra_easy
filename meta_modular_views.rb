@@ -68,13 +68,8 @@ class MetaModular < Sinatra::Base
 def test_run (run)
 		test = run.test
 		klass = run.klass
-		div {
-			h2 {
-				link(test)
-				_".test(" 
-				link(klass)
-				_")"}
-				
+		
+		Layout.new.header(link(test) + ".test(" + link(klass) + ")").side_menu(nav).content(
 			table {
 				tr {
 					th "method"
@@ -99,9 +94,8 @@ def test_run (run)
 						}
 					end
 				}		
-			}		
-		}
-
+			}
+		).render	
 end
 
 	def home
@@ -132,16 +126,12 @@ end
 	
 	end
 	def klass_view(k)
-	
-		html{
-			body{
-				h1 k.name
-				a  "code", :href => "/code/#{params[:klass_name]}"
+		Layout.new.header(k.name).side_menu(nav).content(
+			div {
+				a  "code", :href => "/code/#{params[:klass_name]}" 
 				test_results_for_class(k)
-
 			}
-		}
-	
+		).render
 	end
 
 	def test_results_for_class (k)
