@@ -13,7 +13,7 @@ class MetaModular < Sinatra::Base
 			}
 
 	end
-	def code  (obj)
+	def code_view  (obj)
 			content_type 'text/plain'
 			return obj.code
 	end

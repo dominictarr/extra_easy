@@ -30,7 +30,7 @@ class MetaModular < Sinatra::Base
 	end
 	get '/code/:klass' do
 		content_type 'text/plain'
-		code(Klass.first(:name => params[:klass]))
+		code_view(Klass.first(:name => params[:klass]))
 	end
 
 	def editor

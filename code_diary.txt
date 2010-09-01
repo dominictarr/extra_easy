@@ -276,9 +276,17 @@ okay. got the updated stuff in meta-modular.
 		
 		just looked up adn realied it's nearly 1 AM.
 
-		ported my layout thing into meta-modular. purple links look like shit in that context.
+		ported my layout thing into meta-modular. purple (visited) links look like shit in that context... rubygems ain't got visited links.
 			@ the table could be nicened.
 
 
 		okay, what about something which can link back to the pages... thats a controller's job, aint it. 
 		it'd remove a lot of the coupling from the views to the controllers.
+
+		#############################
+		every header/title should have a code to copy/paste into a couple('classname')
+		
+		and every page has a console in it?
+		
+		think about formats for navigating lots of technical information...
+		#############################
