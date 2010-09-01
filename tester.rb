@@ -4,17 +4,19 @@ require 'quick_attr'
 # require 'open4'
 # require 'modules/stdout_catcher'
 require 'sandbox'
+require 'adapt_test'
 
 def include_header (code)
 	eval code
 end
 
 class Tester 
+	
 	extend QuickAttr	
 	quick_attr :test,:klass
 	quick_array :requires
 	quick_array :headers
-
+	
 	def run()
 		result = Hash.new
 		requires.each {|r| 
@@ -38,7 +40,7 @@ class Tester
 			}
 			returned[:output] = o
 			result[m] = returned
-			r = false unless result[m][:result] == "pass"  #here is checks for a pass.
+			r = false unless result[m][:result] == TestResult::PASS  #here is checks for a pass.
 		}
 		result[:pass] = r
 		result

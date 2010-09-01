@@ -14,7 +14,8 @@ namespace :db do
 	end
 	task :test do
 		require 'tests/db_test_model2'
-		#Mini::Test.autorun!
+		require 'tests/db_test_rb_file'
+     		Mini::Test.autorun
 	end
 end
 

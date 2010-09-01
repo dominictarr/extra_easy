@@ -1,5 +1,5 @@
  require "adaptable_test"
-# require "modules/primes"
+ require "modules/primes"
 # require "modules/dynamic_primes2"
 # require "modules/smart_primes3"
 
@@ -9,7 +9,7 @@
  	class TestPrimes < AdaptableTest 
 
 #  	def default_subject; Primes; end
-  	def default_subject; SmartPrimes3; end
+  	def default_subject; Primes; end
 
 	def create (*a,&block) 
 		subject.new(*a,&block)

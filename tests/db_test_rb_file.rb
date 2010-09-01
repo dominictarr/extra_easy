@@ -1,4 +1,5 @@
 
+
 require 'model_test.rb'
 require 'model2.rb'
 require 'datetime_convert'
@@ -20,9 +21,9 @@ class TestRbFile < ModelTest
 	end
 	
 	def test_load
-		t = subject.load_rb('tests/test_rb_file.rb')
-		assert_equal 'tests/test_rb_file.rb',t.name
-		assert t.code
+		t = subject.load_rb('tests/db_test_rb_file.rb')
+#		assert_equal 'tests/test_rb_file.rb',t.name
+		assert_equal File.open('tests/db_test_rb_file.rb').read,t.code
 #		puts t.code
 	end
 end

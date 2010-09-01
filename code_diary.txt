@@ -204,12 +204,81 @@ okay. got the updated stuff in meta-modular.
 				then I think I could wrap every thing in a module and it will work.
 				after testing I can remove the module... and put that module inside another one, with shadowed Kernel, etc.
 				
-				
-	okay, I got a text editor pane. 
-	my interface is really combersome though. 
-	I should spend a few days tidying it up.
 	
-	another big problem is the tester does not report the pass result properly!!!
-	it's says pass when there is a fail!
+	
+	NEXT:
+	~okay, I got a text editor pane. 
+	~my interface is really combersome though. 
+	~I should spend a few days tidying it up.
+	
+		@another big problem is the tester does not report the pass result properly!!!
+	
+		@it's says pass when there is a fail!
+	
+		@and the code editor doesn't update when you change the code...
 				
-				
+==================================================================================================
+		
+		okay, I gotta nicen the interface, and organize the code which does that.
+		
+		maybe use a thing like my html_dsl but extend it to use higher level constructs... menus, (web) columns, back/forward
+		login, signup, etc.
+		
+		organize my sinatra into something like MVC. I already have the M seperate. seperate V and C.
+		
+		... some sort of layout thing.
+		
+		... opperate at a higher level than <tags></tags>
+		
+		... more like: menu item,...
+		page {
+			header {
+					title "HeLLo!"
+			}
+			columns (30,50){
+				menu {
+				link ...
+				link ...
+				link ...
+				}
+				contents {
+					post {
+					_ "here is a blog post."
+					}						
+				}
+			}
+		}
+		
+		
+		is it better to generate the page as it goes, or store everything and generate it on a call to .render or something?
+		
+		okay, I don't feel sure how to start with this so i'll build a hard wired prototype.
+		
+		
+		realisticially, most websites have a
+			header (with the site name and maybe menu *)
+			a menu on left (probably with navigation of lesser important)
+			possibly another on the right (probably with ads)
+			and one last panel, in the middle with content.
+			
+			*sometime put the menu small and above the title.
+			
+			in some contexts you might drop the side menus or have just one thing which is centered and takes up whole page, 
+			google.com or twitter error page
+			
+			there are lots of different ways to implement those things in html/css but that is basicially what your going to want.
+			
+		what i've got is a very basic version of that.
+		it could certainly be expanded, and made more DSLish
+		
+		I've got a feeling though, that I should check out rails a bit more. even if I don't use it, 
+		might be good to know where everyone else is coming from.
+		
+		just looked up adn realied it's nearly 1 AM.
+
+		ported my layout thing into meta-modular. purple links look like shit in that context.
+			@ the table could be nicened.
+
+
+		okay, what about something which can link back to the pages... thats a controller's job, aint it. 
+		it'd remove a lot of the coupling from the views to the controllers.

@@ -88,9 +88,11 @@ class TestModel2 < ModelTest
 	
 	def test_parse_from_rb_file
 		klasses = []
+		puts "PARSE .rb ============================="
 		klasses += RbFile.load_rb("modules/tests/test_primes.rb").parse
 		klasses += RbFile.load_rb("modules/primes.rb").parse
 		klasses += RbFile.load_rb("modules/smart_primes.rb").parse
+		puts "PARSE .rb END ============================="
 	
 		tp = Klass.first(:name => :TestPrimes)
 		p = Klass.first(:name => :Primes)
@@ -98,6 +100,14 @@ class TestModel2 < ModelTest
 		assert tp
 		assert p
 		assert sp
+
+		assert TestRun.first(:klass => tp, :test => {:name => :TestAdaptableTest}).pass, "expected TestPrimes to pass TestAdaptableTest"
+		
+
+		assert tr = TestRun.first(:klass => p, :test => tp)
+		assert tr.pass
+		
+		assert_equal TestResult::PASS, tr.result
 
 		assert_equal [p,sp], tp.klasses_passed
 		

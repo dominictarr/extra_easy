@@ -1,6 +1,12 @@
 require 'mini/test'
 require 'minitest/unit'
 
+module TestResult
+	PASS = "pass"
+	FAIL = "Fail."
+	ERROR = "ERROR!"
+end
+
 module AdapterForTest
 	class MiniRunner < Hash
 		def puke klass,method,error
@@ -12,9 +18,9 @@ module AdapterForTest
 
 			case error
 				when Mini::Assertion then
-					self[:result] = "Fail."
+					self[:result] = TestResult::FAIL
 				else
-					self[:result] = "ERROR!"
+					self[:result] = TestResult::ERROR
 				end
 			return 		self
 		end
@@ -45,7 +51,7 @@ module AdapterForTest
 			#self[:klass] = klass.name
 			mr[:method] = @name
 
-			mr[:result]= "pass" if mr[:result].nil?
+			mr[:result]= TestResult::PASS if mr[:result].nil?
 
 			return mr.to_hash
 	end

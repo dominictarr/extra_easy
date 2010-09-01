@@ -3,6 +3,7 @@ require 'dm-validations'
 require  'dm-migrations'
 require 'tester'
 require 'rb_parser'
+require 'adapt_test'
 
   class RbFile
 		include DataMapper::Resource
@@ -29,7 +30,7 @@ require 'rb_parser'
 				k.rb_file = self
 				k.save
 				k.run_all_tests
-			#	puts "UPDATED: #{k.name}"
+
 				added << k
 			}
 			added
@@ -125,9 +126,14 @@ require 'rb_parser'
 
 			self.pass= r[:pass]
 			time = 0.0
-			self.result = "pass"
+			self.result = TestResult::PASS
 			self.save
 			raise "#{self.inspect} NOT SAVED!!!" unless self.saved?
+
+			puts "Test #{klass.name} on #{test.name} => #{pass} in #{total_time}"
+
+			message = nil
+			error = nil
 
 			r.each {|k,v|
 				if v.is_a? Hash then
@@ -135,8 +141,7 @@ require 'rb_parser'
 					trm = TestRunMethod.first_or_create({
 							:method_name => v[:method], 
 							:test_run => self},
-							{
-							:error => v[:error],
+							{:error => v[:error],
 							:message => v[:message],
 							:trace => v[:trace],
 							:result => v[:result],
@@ -146,12 +151,14 @@ require 'rb_parser'
 					)
 					
 					case trm.result
-						when "Fail." then
-							self.result = trm.result if self.result == "pass"
-						when "ERROR!" then
+						when TestResult::FAIL then
+							puts message = "		Fail! #{trm.message}" unless message
+							self.result = trm.result if self.result == TestResult::PASS
+						when TestResult::ERROR then
+							puts message = "		#{error = trm.error} #{trm.message}" unless error
 							self.result = trm.result
 						else
-							self.result = "pass"
+							self.result = TestResult::PASS
 						end							
 					time += trm.time_taken
 					unless trm.saved? then
@@ -160,7 +167,6 @@ require 'rb_parser'
 				end
 			}
 			self.total_time = time
-			puts "Test #{klass.name} on #{test.name} => #{pass} in #{total_time}"
 			
 			save
 			reload

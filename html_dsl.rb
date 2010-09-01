@@ -95,7 +95,7 @@ deftag :ul,:ol,:li
 
 deftag :form,:input, :textarea
 
-deftag :code
+deftag :code, :style, :script
 
 def br
 	_"<br>"
