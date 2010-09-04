@@ -35,14 +35,12 @@ class MetaModular < Sinatra::Base
 	get '/couple/:test' do
 		content_type 'text/plain'
 		klass = Klass.first(:name => params[:test])
-		puts klass.inspect
 		if klass.is_test then
 			klass = klass.klasses_passed.first
 		end
 		a = [klass.name]
 		a << klass.code
 		s = "" << a.to_yaml
-		puts s
 		s
 	end
 
