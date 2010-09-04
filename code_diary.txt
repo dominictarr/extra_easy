@@ -374,4 +374,10 @@ okay. got the updated stuff in meta-modular.
 		so the test for getting couple in there, is to be able to use it in a test, 
 		so there are no other outside dependencies... (no require X)
 		
+		I need a test for Coupler. + with versions which cache responses on disk and in mem... hmm. 
+		so it should try to couple a few gaurenteed things. TestPrimes... 
+		and area few impossible things. like with MagicNumber[MANYRANDOMDIGITS] 
+		the most basic one will just request from meta-modular.org, who cares. 
+		more advances ones will cache locally or in mem.
+		
 		
