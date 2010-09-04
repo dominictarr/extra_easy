@@ -4,14 +4,16 @@ require 'quick_attr'
 # require 'open4'
 # require 'modules/stdout_catcher'
 require 'sandbox'
-require 'adapt_test'
 
 def include_header (code)
 	eval code
 end
 
 class Tester 
-	
+	PASS = "pass"
+	FAIL = "Fail."
+	ERROR = "ERROR!"
+
 	extend QuickAttr	
 	quick_attr :test,:klass
 	quick_array :requires
@@ -40,7 +42,7 @@ class Tester
 			}
 			returned[:output] = o
 			result[m] = returned
-			r = false unless result[m][:result] == TestResult::PASS  #here is checks for a pass.
+			r = false unless result[m][:result] == Tester::PASS  #here is checks for a pass.
 		}
 		result[:pass] = r
 		result
@@ -59,12 +61,13 @@ class Tester
 	
 		sb = Sandbox.new
 		sb.code ""
-		requires.each{|r|
-			sb.code << "require \"#{r}\"\n"
-		}
 		sb.code << "require 'rubygems'\n"
 		sb.code << "require 'mini/test'\n"
 		sb.code << "require 'tester'\n"
+		sb.code << "require 'adaptable_test'\n"
+		requires.each{|r|
+			sb.code << "require \"#{r}\"\n"
+		}
 		sb.code << "module ASandBoxedTest\n" 
 		headers.each{|r|
 			sb.code << "#{r}\n"
@@ -76,8 +79,6 @@ class Tester
 		sb.code << "end\n"
 		sb.code << "ASandBoxedTest::run_test_324923897498234723249\n"
 
-#		sb.code << "self.run_test\n"
-		#puts sb.code
 		sb.run
 
 	end

@@ -18,7 +18,6 @@ require 'adapt_test'
 		validates_uniqueness_of :code_hash
 
 		has n, :klasses
-
 		def parse
 			r = ClassHerd::RbParser.new(code).parse
 			#puts "classes Parsed from #{name}"
@@ -35,7 +34,13 @@ require 'adapt_test'
 			}
 			added
 		end
-		
+		def self.load_code(code,name="ruby_#{code.hash.to_s(36)}")
+			rb = RbFile.new
+			rb.name = name
+			rb.code = code
+			rb.code_hash = code.hash
+			rb
+		end		
 		def self.load_rb(file)
 			if file.is_a? String then
 				file = File.open(file)
@@ -64,11 +69,11 @@ require 'adapt_test'
 		has n, :this_test_runs, 'TestRun', :child_key => ['test_id']
 		
 		def run_test (subject)
-
+			puts "#{self.name}.run_test(#{subject.name})"
 			tr = TestRun.first_or_create(:klass => subject,:test => self)
-			if tr.pass.nil? then
-				tr.run
-			end
+#			if tr.pass.nil? then
+			tr.run
+#			end
 			tr.save
 			return tr
 		end
@@ -116,6 +121,7 @@ require 'adapt_test'
 		property :total_time, Float
 		property :pass,	Boolean
 		property :result,	String
+		property :last_run,	DateTime
 
 		def run
 			r =  Tester.new.
@@ -123,10 +129,13 @@ require 'adapt_test'
 				klass(klass.name).
 				headers((test.code + klass.code)).
 				run_sandboxed
-
+				
+			raise "got no results from test:#{test.name} -> class:#{klass.name}" unless r
+			
 			self.pass= r[:pass]
 			time = 0.0
-			self.result = TestResult::PASS
+			self.result = Tester::PASS
+			self.last_run = Time.now
 			self.save
 			raise "#{self.inspect} NOT SAVED!!!" unless self.saved?
 
@@ -138,27 +147,26 @@ require 'adapt_test'
 			r.each {|k,v|
 				if v.is_a? Hash then
 				
-					trm = TestRunMethod.first_or_create({
+					trm = TestRunMethod.first_or_create(
 							:method_name => v[:method], 
-							:test_run => self},
-							{:error => v[:error],
-							:message => v[:message],
-							:trace => v[:trace],
-							:result => v[:result],
-							:time_taken => v[:time],
-							:output => v[:output]
-							}
-					)
+							:test_run => self)
+					trm.error = v[:error]
+					trm.message = v[:message]
+					trm.trace = v[:trace]
+					trm.result = v[:result]
+					trm.time_taken = v[:time_taken] || 0
+					trm.output = v[:output]
+					trm.save
 					
 					case trm.result
-						when TestResult::FAIL then
+						when Tester::FAIL then
 							puts message = "		Fail! #{trm.message}" unless message
-							self.result = trm.result if self.result == TestResult::PASS
-						when TestResult::ERROR then
+							self.result = trm.result if self.result == Tester::PASS
+						when Tester::ERROR then
 							puts message = "		#{error = trm.error} #{trm.message}" unless error
 							self.result = trm.result
 						else
-							self.result = TestResult::PASS
+							self.result = Tester::PASS
 						end							
 					time += trm.time_taken
 					unless trm.saved? then

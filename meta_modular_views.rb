@@ -125,10 +125,53 @@ end
 		).render
 	
 	end
+	def editor_view rb_file,returned,output,run_error
+	
+		code = rb_file ? rb_file.code : ""
+		name = rb_file ? rb_file.name : ""
+		names = rb_file ? (rb_file.klasses.collect{|c| c.name}.join(",") + " (#{name})"): name
+
+		Layout.new.header("edit : #{names}").content(	
+			div {
+				form(:action => "/save_edit", :enctype => "multipart/form-data", :method => "post") {
+					_"save as" 
+					input :type=>"textbox", :name=>"rb_file", :value=>name
+					br
+					textarea code, :name=>"code", :cols=>80, :rows=>30
+					br
+					input :type=>"submit", :name=>"save", :value=>"save"
+					input :type=>"submit", :name=>"test", :value=>"test"
+				}
+				returned = nil
+
+				if run_error then
+					h2 run_error.class
+					i run_error.message
+					div run_error.backtrace.join("<br>")
+				end
+
+				#just catch the regular ruby syntax error.
+				if rb_file and rb_file.klasses.first then
+					test_results_for_class (rb_file.klasses.first)				
+				end
+
+				h2 "output..."
+				code (:lang => "ruby") {
+					_ output
+				}
+				h2 "returned..."
+				code (:lang => "ruby") {
+					_ returned.inspect
+				}
+			}
+		).render
+	end
 	def klass_view(k)
 		Layout.new.header(k.name).side_menu(nav).content(
 			div {
-				a  "code", :href => "/code/#{params[:klass_name]}" 
+				a  "code", :href => "/code/#{k.name}" 
+				_ " "
+				a  "edit", :href => "/editor/#{k.rb_file.name}" 
 				test_results_for_class(k)
 			}
 		).render
@@ -138,11 +181,11 @@ end
 	
 				h2 "tests"
 
-				div test_table(:klass => k)#,:pass=>true)				
+				div test_table(:klass => k)#,:pass=>true)		
 				
 				if k.is_test then
 					h2 "classes passed"
-					div test_table(:test => k,:pass=>true)
+					div test_table(:test => k)#,:pass=>true)
 				end
 	
 	end

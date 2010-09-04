@@ -1,6 +1,7 @@
 require 'dm_prod'
 require 'model2'
 require 'model_test'
+require 'tester'
 
 class TestModel2 < ModelTest
 	def default_subject; NilClass; end
@@ -86,7 +87,7 @@ class TestModel2 < ModelTest
 		assert tp.klasses_passed.include? sp
 	end
 	
-	def test_parse_from_rb_file
+	def dont_test_parse_from_rb_file
 		klasses = []
 		puts "PARSE .rb ============================="
 		klasses += RbFile.load_rb("modules/tests/test_primes.rb").parse
@@ -107,7 +108,7 @@ class TestModel2 < ModelTest
 		assert tr = TestRun.first(:klass => p, :test => tp)
 		assert tr.pass
 		
-		assert_equal TestResult::PASS, tr.result
+		assert_equal Tester::PASS, tr.result
 
 		assert_equal [p,sp], tp.klasses_passed
 		
@@ -136,7 +137,7 @@ class TestModel2 < ModelTest
 		
 	end
 
-	def test_parse_from_rb_file_werid
+	def dont_test_parse_from_rb_file_werid
 		klasses = []
 		klasses += RbFile.load_rb("modules/tests/test_primes.rb").parse
 		klasses += RbFile.load_rb("modules/primes.rb").parse
@@ -188,6 +189,59 @@ class TestModel2 < ModelTest
 		t2.reload
 		assert_equal [w2,w3], t2.whatevers
 	end
+	
+	
+	def test_updating_code
+		#does test runs etc behave right when code changes?
+		
+		test_code = %{
+		class TestSimple < AdaptableTest
+			def default_subject; nil; end 
+			def test_initialize
+				assert subject.new, "#{subject} should have .new method"
+				assert_equal subject, subject.new.class, "#{subject}.new.class returns #{subject}"
+			end
+		end
+		#class DefaultSubject; end
+		}
+		test_klass1 = %{
+			class Hello1; end
+		}
+	
+		test_simple_rb = RbFile.load_code(test_code, "test_simple")
+		klasses = test_simple_rb.parse
+		assert klasses.is_a?(Array), "RbFile.load_code(...).parse to list of classes."
+		assert_equal 1,klasses.length
+		assert_equal 'TestSimple',klasses[0].name
+		test_simple = klasses[0]
+
+		tat = Klass.first(:name => :TestAdaptableTest)
+
+		tr = TestRun.first(:test => tat, :klass => test_simple)
+
+		assert tr
+		assert tr.pass
+		assert_equal tr.result, Tester::PASS
+
+		tat.run_test(test_simple)	
+
+		test_simple.reload
+		assert_equal [tat],test_simple.tests_passed
+
+
+		test_simple_rb = RbFile.load_code(test_klass1, "hello1")
+		klasses = test_simple_rb.parse
+		assert klasses.is_a?(Array), "RbFile.load_code(...).parse to list of classes."
+		assert_equal 1,klasses.length
+		assert_equal 'Hello1',klasses[0].name
+		hello1 = klasses[0]
+		
+		assert_equal [test_simple],hello1.tests_passed
+
+				
+	
+	end
+
 end
 
 if __FILE__ == $0 then

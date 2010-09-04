@@ -4,6 +4,8 @@ require 'quick_attr'
 require 'stdout_catcher'
 require 'sandbox'
 
+#what happens if you are running a sandbox, but you give it something with a syntax error?
+
 class Sandbox 
 extend QuickAttr
 quick_attr :code,:output,:returned,:error
@@ -23,7 +25,15 @@ def run
 			
  			err = stderr.read
 			raise(err) if (err != "" )
-			#raise(report[:error]) if report[:error]
+		#	raise(report[:error] ... ) if report[:error]
+
+			raise(" error running sandbox:
+			#{report[:error]}... #{report[:error_trace].join("\n")}
+			
+CODE:========================================
+#{code}			
+=============================================
+			") if report[:error]
 
 		end
 		returned
@@ -38,7 +48,7 @@ end
 
 	if __FILE__ == $0 then
 		returned = nil
-		#puts "CRAZY"
+
 		error = nil
 		output = StdoutCatcher.catch_out {
 		code = $stdin.read
