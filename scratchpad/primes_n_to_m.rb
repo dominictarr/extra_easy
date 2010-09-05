@@ -1,4 +1,3 @@
-#require 'library'
 require 'coupler'
 include Coupler
 n = ARGV[0].to_i

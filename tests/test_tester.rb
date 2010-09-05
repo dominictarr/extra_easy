@@ -100,12 +100,12 @@ class TestTester < AdaptableTest
 	end
 	def test_simple3
 		ps_code = %{
-			class PrimesSubclass < couple :TestPrimes
+			class PrimesSubclass < couple(:TestPrimes)
 			end
 		}
-		test_adaptable_test = File.open('modules/tests/test_primes.rb').read
+		test_primes = File.open('modules/tests/test_primes.rb').read
 		
-		r = subject.new.test(:TestPrimes).klass(:PrimesSubclass).run#_sandboxed
+		r = subject.new.headers([ps_code,test_primes]).test(:TestPrimes).klass(:PrimesSubclass).run#_sandboxed
 		assert r, "Expected TestPrimes.test(PrimesSubclass) to give results"
 		#fails because a test.new(..) has arity=1
 		
