@@ -98,6 +98,22 @@ class TestTester < AdaptableTest
 
 		assert r[:pass]
 	end
+	def test_simple3
+		ps_code = %{
+			class PrimesSubclass < couple :TestPrimes
+			end
+		}
+		test_adaptable_test = File.open('modules/tests/test_primes.rb').read
+		
+		r = subject.new.test(:TestPrimes).klass(:PrimesSubclass).run#_sandboxed
+		assert r, "Expected TestPrimes.test(PrimesSubclass) to give results"
+		#fails because a test.new(..) has arity=1
+		
+#		r = subject.new.test(:TestAdaptableTest).klass(:TestSimple).headers([test_code]).run#_sandboxed
+#		assert r, "Expected TestSimple.test(TestAdaptableTest) to give results"
+
+		assert r[:pass]
+	end
 end
 
 Mini::Test.autorun

@@ -65,6 +65,8 @@ class Tester
 		sb.code << "require 'mini/test'\n"
 		sb.code << "require 'tester'\n"
 		sb.code << "require 'adaptable_test'\n"
+		sb.code << "require 'coupler'\n"
+		sb.code << "include Coupler\n"
 		requires.each{|r|
 			sb.code << "require \"#{r}\"\n"
 		}
