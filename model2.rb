@@ -71,9 +71,7 @@ require 'adapt_test'
 		def run_test (subject)
 			puts "#{self.name}.run_test(#{subject.name})"
 			tr = TestRun.first_or_create(:klass => subject,:test => self)
-#			if tr.pass.nil? then
 			tr.run
-#			end
 			tr.save
 			return tr
 		end
@@ -83,7 +81,6 @@ require 'adapt_test'
 				self.is_test = true
 				self.save
 				return true
-				
 			end
 			false
 		end
@@ -127,14 +124,14 @@ require 'adapt_test'
 			r =  Tester.new.
 				test(test.name).
 				klass(klass.name).
-				headers((test.code + klass.code)).
+				headers(test.code,klass.code).
 				run_sandboxed
 				
 			raise "got no results from test:#{test.name} -> class:#{klass.name}" unless r
 			
 			self.pass= r[:pass]
 			time = 0.0
-			self.result = Tester::PASS
+			self.result = nil
 			self.last_run = Time.now
 			self.save
 			raise "#{self.inspect} NOT SAVED!!!" unless self.saved?
@@ -154,14 +151,16 @@ require 'adapt_test'
 					trm.message = v[:message]
 					trm.trace = v[:trace]
 					trm.result = v[:result]
-					trm.time_taken = v[:time_taken] || 0
+					trm.time_taken = v[:time]
 					trm.output = v[:output]
 					trm.save
 					
 					case trm.result
+						when Tester::PASS then
+							self.result = trm.result unless self.result
 						when Tester::FAIL then
 							puts message = "		Fail! #{trm.message}" unless message
-							self.result = trm.result if self.result == Tester::PASS
+							self.result = trm.result unless self.result == Tester::ERROR
 						when Tester::ERROR then
 							puts message = "		#{error = trm.error} #{trm.message}" unless error
 							self.result = trm.result

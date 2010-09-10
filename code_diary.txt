@@ -381,3 +381,81 @@ okay. got the updated stuff in meta-modular.
 		more advances ones will cache locally or in mem.
 		
 		
+		############################################################3
+		
+		GREAT IDEA TODAY
+		
+		make meta-modular download a gist and run it. it's a great way to store the code, 
+		there is already syntax highlighting comments all that stuff!
+		plus everyone already thinks github and gist is fantastic.
+		
+		edit the code in gist, c/p the url into another webpage, and run it.
+		
+		i've realised there is a free plan for mongoDB... so I might change to that.
+		but the next thing, should be a Sinatra App to run gists.
+		
+		i'll want to protect the DB I should look at fakeFS (which makes an in mem file system
+		
+		
+		======================================================
+		
+		okay, some more thinking out loud here: 
+		
+		it doesn't take much development with sinatra to run into a wall. 
+		it's great for simple hello world stuff.
+		but doing a proper page layout it isn't.
+		
+		what i really like about it is how you start with a completely blank file, and build it up.
+		thats why I don't use rails. it's too fat.
+		
+		what I want from my microframework:
+			replacable templates... with multiple panes...
+			- thats the current obstical. 
+			
+		i've run into problems with markby. it runs it's blocks as instance_eval... 
+		this means loads of weird DSL behaviour. it means you can't call functions properly,
+		thats something I soon ditched with htmldsl...
+		
+		or maybe do i just need to create more Markaby::Builder.new....?
+					
+					
+		what if you replaced self, 
+		but saved the old self, 
+		and when there was a missing method, 
+		it called it on the old self?
+		
+		....
+		
+		
+		
+		pause to let it sink in.
+		
+		
+		
+		
+		....
+		
+		
+		maybe, i'll just fix markaby.
+		
+
+
+		I also really like the callbacks in Wee. is there a way to do that as well, but more RESTful?
+		these tie in with routes?
+		if i say a link has a callback then it gives the link a hash which references the block 
+		and when the request comes back, it finds that callback and calls it.
+		
+		could do the same things for objects, which have state etc.
+		but instead of the hash, there is a path which can contain a chain of statements.
+		i.e. Post.get(12).show
+		Post.get(12).comment(10).save
+		Post.get(12).comment(10).title(title)
+		
+		these could be legal urls, so what if we just chain things together like this?
+		
+		you could even just eval the url. ha. or parse it to something stightly different
+		post/get(10)/comment(10,10) blah.blah.blah
+		
+		this could definately be a way to do it.
+		
+		okay. just try callbacks first though!

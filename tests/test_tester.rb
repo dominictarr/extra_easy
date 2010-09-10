@@ -89,7 +89,7 @@ class TestTester < AdaptableTest
 		}
 		test_adaptable_test = File.open('tests/test_adaptable_test.rb').read
 		
-		r = subject.new.test(:TestSimple).klass(:TestAdaptableTest).headers([test_code,test_adaptable_test]).run_sandboxed
+		r = subject.new.test(:TestSimple).klass(:TestAdaptableTest).headers(test_code,test_adaptable_test).run_sandboxed
 		assert r, "Expected TestSimple.test(TestAdaptableTest) to give results"
 		#fails because a test.new(..) has arity=1
 		
@@ -104,14 +104,16 @@ class TestTester < AdaptableTest
 			end
 		}
 		test_primes = File.open('modules/tests/test_primes.rb').read
+		puts ps_code.inspect
+#		puts test_primes
 		
-		r = subject.new.headers([ps_code,test_primes]).test(:TestPrimes).klass(:PrimesSubclass).run#_sandboxed
+		
+		r = subject.new.headers(ps_code,test_primes).test(:TestPrimes).klass(:PrimesSubclass).run#_sandboxed
 		assert r, "Expected TestPrimes.test(PrimesSubclass) to give results"
-		#fails because a test.new(..) has arity=1
-		
-#		r = subject.new.test(:TestAdaptableTest).klass(:TestSimple).headers([test_code]).run#_sandboxed
-#		assert r, "Expected TestSimple.test(TestAdaptableTest) to give results"
+		assert r[:pass]
 
+		r = subject.new.headers(ps_code,test_primes).test(:TestPrimes).klass(:PrimesSubclass).run_sandboxed
+		assert r, "Expected TestPrimes.test(PrimesSubclass) to give results"
 		assert r[:pass]
 	end
 end

@@ -2,12 +2,14 @@
 require 'modules/primes'
 #calculate factors slowly.
 class Factors 
-
+	def primes 
+		couple(:TestPrimes)
+	end
 def is_prime? (f)
-	Primes.new(f*f).primes.include? f
+	primes.new(f*f).primes.include? f
 end
 	def next_factor(f)
-		n = Primes.new(f).primes
+		n = primes.new(f).primes
 		n.find{|p| f % p == 0} 
 	end
 def factors (f)

@@ -21,11 +21,17 @@ class Tester
 	
 	def run()
 		result = Hash.new
-		requires.each {|r| 
-			require r
-		}
+		require 'coupler'
+		require 'adaptable_test'
+		self.class.send(:include, Coupler)
+
+		puts "+++++++++++++++++++++++++++++++"
+		puts headers.inspect
 		headers.each {|r| 
 			include_header r
+		}
+		requires.each {|r| 
+			require r
 		}
 		t = include_header test.to_s
 		k = include_header klass.to_s

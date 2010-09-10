@@ -4,7 +4,7 @@ require 'modules/factors'
 class TestFactors < AdaptableTest
 
 #const_set(:Factors,FastFactors)
-	def default_subject; Factors; end
+#	def default_subject; Factors; end
 
 def test_factors_prime
 	fac = subject.new

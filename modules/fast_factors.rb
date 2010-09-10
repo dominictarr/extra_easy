@@ -1,11 +1,6 @@
 
-require 'modules/primes'
-#calculate factors slowly.
 class FastFactors 
 
-#def is_prime? (f)
-#	Primes.new(f*f).primes.include? f
-#end
 	def next_factor(f)
 		@primes.find{|p| f % p == 0} 
 		#this is better than factors but to be
@@ -13,7 +8,7 @@ class FastFactors
 		#@primes once
 	end
 def factors (f)
-	@primes = Primes.new(f).primes
+	@primes = couple(:TestPrimes).new(f).primes
 	fac =[]
 		while !(@primes.include? f) do
 			f2 = next_factor(f)
